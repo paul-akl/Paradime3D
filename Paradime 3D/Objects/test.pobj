@@ -1,0 +1,16 @@
+<game object>
+	<model>test1.obj</model>
+	<material>
+		<name>uvtemplate.DDS</name>
+		<index>1</index>
+	</material>
+	<shaders>
+		<vertex>geometryPass.pvert</vertex>
+		<fragment>geometryPass.pfrag</frag>
+	</shaders>
+	<rotation>
+		<x>90.0</x>
+		<y>0.0</y>
+		<z>0.0</z>
+	</rotation>
+</game object>

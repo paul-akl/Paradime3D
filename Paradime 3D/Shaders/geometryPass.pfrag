@@ -1,0 +1,21 @@
+#version 330 core
+
+in vec3 worldPos;
+in vec2 texCoord;
+in vec3 normal;
+
+layout(location = 0) out vec3 positionBuffer;
+layout(location = 1) out vec3 diffuseBuffer;
+layout(location = 2) out vec3 normalBuffer;
+layout(location = 3) out vec3 texCoordBuffer;
+
+uniform sampler2D textureSampler;
+
+void main()
+{
+	diffuseBuffer	= texture2D(textureSampler, texCoord).rgb;
+	texCoordBuffer	= vec3(texCoord, 0.0);
+	positionBuffer	= worldPos;
+	//normalBuffer	= normal;
+	normalBuffer	= normalize(normal);
+}

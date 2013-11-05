@@ -1,0 +1,3 @@
+model cube_with_diffuse_texture.3DS
+vertex_shader TransformVertexShader.vertexshader
+fragment_shader TextureFragmentShader.fragmentshader

@@ -1,0 +1,12 @@
+model test1.obj
+//material 1 uvtemplate.DDS
+//material 2 uvtemplate.DDS
+//material 3 uvtemplate.DDS
+
+//vertex_shader TransformVertexShader.vertexshader
+//fragment_shader TextureFragmentShader.fragmentshader
+
+vertex_shader geometryPass.pvert
+fragment_shader geometryPass.pfrag
+
+rotation 90.0f 0.0f 0.0f

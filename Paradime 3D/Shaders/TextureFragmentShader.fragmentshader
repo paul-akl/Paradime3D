@@ -1,0 +1,83 @@
+#version 330 core
+
+const int numPointLights = 30;
+
+// Interpolated values from the vertex shaders
+in vec2 UV;
+in vec3 pos;
+in vec3 norm;
+
+// Ouput data
+//out vec3 color;
+//layout(location = 0) out vec3 color;
+//layout(location = 1) out vec3 coordinates;
+//layout(location = 2) out vec3 positionTex;
+//layout(location = 3) out vec3 depth;
+
+
+layout(location = 0) out vec3 positionTex;
+layout(location = 1) out vec3 color;
+layout(location = 2) out vec3 depth;
+layout(location = 3) out vec3 coordinates;
+                                                      
+struct BaseLight
+{
+	vec3 Color;
+	float AmbientIntensity;
+	float DiffuseIntensity;
+};
+
+struct DirectionalLight
+{
+	BaseLight Base;
+	vec3 Directional;
+};
+
+struct Attenuation
+{
+	float Constant;
+	float Linear;
+	float Exp;
+};
+
+struct PointLight
+{
+	BaseLight Base;
+	vec3 Position;
+	Attenuation Atten;
+};
+
+uniform DirectionalLight dirLight;
+
+uniform PointLight pointLights[10];
+
+uniform vec3 PointColor[numPointLights];
+uniform float PointAmbientIntensity[numPointLights];
+uniform float PointDiffuseIntensity[numPointLights];
+uniform vec3 PointPosition[numPointLights];
+uniform float PointAttenConstant[numPointLights];
+uniform float PointAttenLinear[numPointLights];
+uniform float PointAttenExp[numPointLights];
+
+
+// Values that stay constant for the whole mesh.
+uniform sampler2D myTextureSampler;
+
+uniform float testArray[30];
+uniform float testFloat;
+
+void main(){
+
+	// Output color = color of the texture at the specified UV
+	//color = texture2D( myTextureSampler, vec2(2, 2) ).rgb;
+	color = texture2D( myTextureSampler, UV ).rgb;
+	//color = vec3(0.1, 0.9, 0.1);
+
+	coordinates = vec3(UV, 0.0);
+	positionTex = pos;
+	//depth = norm;
+	//depth = vec3(testArray[0], testArray[1], testArray[2]);
+	//depth = pointLights[0].Base.Color;
+	//depth = vec3(1, 0, 0);
+	depth = vec3(gl_FragCoord.w, gl_FragCoord.w, gl_FragCoord.w);
+}

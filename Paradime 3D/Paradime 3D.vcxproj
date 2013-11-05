@@ -1,0 +1,158 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{EF7B8D8C-B652-49BE-898D-531D8AAA4FB3}</ProjectGuid>
+    <RootNamespace>Paradime3D</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>$(SolutionDir)\VC\include;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;</IncludePath>
+    <LibraryPath>$(SolutionDir)\VC\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>$(SolutionDir)\VC\include;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;</IncludePath>
+    <LibraryPath>$(SolutionDir)\VC\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <ShowIncludes>false</ShowIncludes>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <AdditionalDependencies>opengl32.lib;assimp.lib;SDL.lib;SDLmain.lib;SDL_ttf.lib;glew32.lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>glew32.lib;opengl32.lib;assimp.lib;SDL.lib;SDLmain.lib;SDL_ttf.lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="AdaptiveUniformsFunctions.cpp" />
+    <ClCompile Include="AdaptiveUniforms.cpp" />
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Clock.cpp" />
+    <ClCompile Include="CommonClasses.cpp" />
+    <ClCompile Include="Config.cpp" />
+    <ClCompile Include="CurrentUpdateState.cpp" />
+    <ClCompile Include="DeferredRenderer.cpp" />
+    <ClCompile Include="ErrorHandler.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameObjects.cpp" />
+    <ClCompile Include="GeometryBuffer.cpp" />
+    <ClCompile Include="Label.cpp" />
+    <ClCompile Include="Lighting.cpp" />
+    <ClCompile Include="Loader_Model.cpp" />
+    <ClCompile Include="Loader_Shader.cpp" />
+    <ClCompile Include="Loader_Texture.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Math.cpp" />
+    <ClCompile Include="OS_Layer.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="Skybox.cpp" />
+    <ClCompile Include="State_MainMenu.cpp" />
+    <ClCompile Include="State_Play.cpp" />
+    <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="Utilities.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AdaptiveUniformsFunctions.h" />
+    <ClInclude Include="AdaptiveUniforms.h" />
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="Clock.h" />
+    <ClInclude Include="CommonClasses.h" />
+    <ClInclude Include="Config.h" />
+    <ClInclude Include="CurrentUpdateState.h" />
+    <ClInclude Include="DeferredRenderer.h" />
+    <ClInclude Include="ErrorHandler.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="GameObjects.h" />
+    <ClInclude Include="GameState.h" />
+    <ClInclude Include="GeometryBuffer.h" />
+    <ClInclude Include="Label.h" />
+    <ClInclude Include="Lighting.h" />
+    <ClInclude Include="Loader_Model.h" />
+    <ClInclude Include="Loader_Shader.h" />
+    <ClInclude Include="Loader_Texture.h" />
+    <ClInclude Include="Math.h" />
+    <ClInclude Include="OS_Layer.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="Scene.h" />
+    <ClInclude Include="Skybox.h" />
+    <ClInclude Include="State_MainMenu.h" />
+    <ClInclude Include="State_Play.h" />
+    <ClInclude Include="Timer.h" />
+    <ClInclude Include="Utilities.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="config.ini" />
+    <None Include="Maps\test.pmap" />
+    <None Include="Objects\car.pgf" />
+    <None Include="Objects\test.pgf" />
+    <None Include="Objects\test2.pgf" />
+    <None Include="Objects\test3.pgf" />
+    <None Include="Objects\test4.pgf" />
+    <None Include="Shaders\dirLightPass.pfrag" />
+    <None Include="Shaders\dirLightPass.pvert" />
+    <None Include="Shaders\geometryPass.pfrag" />
+    <None Include="Shaders\geometryPass.pvert" />
+    <None Include="Shaders\pointLightPass.pfrag" />
+    <None Include="Shaders\pointLightPass.pvert" />
+    <None Include="Shaders\skybox.pfs" />
+    <None Include="Shaders\skybox.pvs" />
+    <None Include="Shaders\stencilPass.pfrag" />
+    <None Include="Shaders\stencilPass.pvert" />
+    <None Include="Shaders\TextureFragmentShader.fragmentshader" />
+    <None Include="Shaders\TransformVertexShader.vertexshader" />
+    <None Include="skybox1.psf" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

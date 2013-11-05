@@ -1,0 +1,9 @@
+model MP_US_Assault.3DS
+
+//vertex_shader TransformVertexShader.vertexshader
+//fragment_shader TextureFragmentShader.fragmentshader
+
+vertex_shader geometryPass.pvert
+fragment_shader geometryPass.pfrag
+
+rotation 270.0f 0.0f 0.0f

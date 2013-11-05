@@ -1,0 +1,10 @@
+model cube.obj
+material 0 uvtemplate.DDS
+
+//vertex_shader TransformVertexShader.vertexshader
+//fragment_shader TextureFragmentShader.fragmentshader
+
+vertex_shader geometryPass.pvert
+fragment_shader geometryPass.pfrag
+
+rotation 90.0f 0.0f 0.0f
