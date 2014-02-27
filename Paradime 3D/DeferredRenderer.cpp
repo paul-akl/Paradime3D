@@ -1,6 +1,6 @@
-#include "DeferredRenderer.h"
-
 #include "CurrentUpdateState.h"
+#include "DeferredRenderer.h"
+#include "OS_Layer.h"
 
 DeferredRenderer::DeferredRenderer()
 {
@@ -19,6 +19,7 @@ void DeferredRenderer::init()
 	{
 		dirLightQuad = new ModelLoader::GenericModel(Config::renderer::dir_light_quad);
 		pointLightSphere = new ModelLoader::GenericModel(Config::renderer::point_light_sphere);
+		spotLightCone = new ModelLoader::GenericModel(Config::renderer::point_light_sphere);
 
 		dirLightShader		= ShaderLoader::load(Config::renderer::dir_light_vert_shader, Config::renderer::dir_light_frag_shader);
 		pointLightShader	= ShaderLoader::load(Config::renderer::point_light_vert_shader, Config::renderer::point_light_frag_shader);
@@ -37,9 +38,17 @@ void DeferredRenderer::init()
 	Message::show(MSG_INFO, MSG_RENDERER, "Deferred renderer has been initialized.");
 }
 
+void DeferredRenderer::update()
+{
+	if(Config::resizeWindow)
+	{
+		gBuffer.reload();
+		Config::resizeWindow = false;
+	}
+}
 void DeferredRenderer::renderScene()
 {
-	gBuffer.updatePerFrame();
+	gBuffer.initFrame();
 
 	geometryPass();
 
@@ -47,22 +56,33 @@ void DeferredRenderer::renderScene()
 
 	for(int i=0; i < Current::scene->lighting->pointLightPoolSize; i++)
 	{
+		Current::scene->lighting->currentLight = Current::scene->lighting->pointLightPool[i];
 		Current::scene->lighting->currentPointLight = Current::scene->lighting->pointLightPool[i];
 
 		stencilPass();
 		pointLightPass();
 	}
 
+	for(int i=0; i < Current::scene->lighting->spotLightPoolSize; i++)
+	{
+		Current::scene->lighting->currentLight = Current::scene->lighting->spotLightPool[i];
+		Current::scene->lighting->currentSpotLight = Current::scene->lighting->spotLightPool[i];
+
+		stencilPass();
+		spotLightPass();
+	}
+
 	glDisable(GL_STENCIL_TEST);
 	
-	dirLightPass();
+	if(Config::drawDebugBuffers)
+		dirLightPass();
 
 	skyboxPass();
 
-	if(Config::drawDebugBuffers)
-		gBuffer.drawBuffers();
+	//if(Config::drawDebugBuffers)
+	//	gBuffer.drawBuffers();
 		//debugDrawBuffers();
-	else
+	//else
 		finalPass();
 }
 
@@ -75,6 +95,8 @@ void DeferredRenderer::geometryPass()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glEnable(GL_DEPTH_TEST);
+
+	OS::resetFaceCulling();
 	
 	Current::scene->renderObjects();
 
@@ -115,14 +137,13 @@ void DeferredRenderer::pointLightPass()
 	gBuffer.initLightPass();
 
 	glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
-	//glStencilFunc(GL_ALWAYS, 0, 0);
 
 	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendEquation(GL_FUNC_ADD);
 	glBlendFunc(GL_ONE, GL_ONE);
         
-    glEnable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
     glCullFace(GL_FRONT);
 
 	pointLightSphere->render(pointLightShader);
@@ -133,12 +154,28 @@ void DeferredRenderer::pointLightPass()
 }
 void DeferredRenderer::spotLightPass()
 {
+	gBuffer.initLightPass();
 
+	glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
+
+	glDisable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glBlendEquation(GL_FUNC_ADD);
+	glBlendFunc(GL_ONE, GL_ONE);
+
+	glEnable(GL_CULL_FACE);
+    glCullFace(GL_FRONT);
+
+	spotLightCone->render(spotLightShader);
+	
+    glCullFace(Config::engine::face_culling_mode);
+    //glCullFace(GL_BACK);
+	glDisable(GL_BLEND);
 }
 void DeferredRenderer::skyboxPass()
 {
 	glEnable(GL_DEPTH_TEST);
-	Current::scene->renderSkybox();
+	Current::scene->renderSky();
 }
 void DeferredRenderer::finalPass()
 {

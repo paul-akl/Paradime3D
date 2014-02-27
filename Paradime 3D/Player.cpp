@@ -57,19 +57,19 @@ void Player::updateFreeLook()
 
 	if(Current::inputState->forwardKey.status)
 	{
-		position += targetVector * Config::game::camera_freelook_speed * Current::deltaTime;
+		position += targetVector * Config::game::camera_freelook_speed * (float)Current::deltaTime;
 	}
 	if(Current::inputState->backwardKey.status)
 	{
-		position -= targetVector * Config::game::camera_freelook_speed * Current::deltaTime;
+		position -= targetVector * Config::game::camera_freelook_speed * (float)Current::deltaTime;
 	}
 	if(Current::inputState->rightKey.status)
 	{
-		position += horizontalVector * Config::game::camera_freelook_speed * Current::deltaTime;
+		position += horizontalVector * Config::game::camera_freelook_speed * (float)Current::deltaTime;
 	}
 	if(Current::inputState->leftKey.status)
 	{
-		position -= horizontalVector * Config::game::camera_freelook_speed * Current::deltaTime;
+		position -= horizontalVector * Config::game::camera_freelook_speed * (float)Current::deltaTime;
 	}
 
 	upVector = Math3d::cross(horizontalVector, targetVector);

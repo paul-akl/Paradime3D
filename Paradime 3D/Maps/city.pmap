@@ -1,0 +1,9 @@
+game_object city.pgf	0.0 -100.0 0.0	0.0 1.0 1.0		1.0 1.0 1.0
+
+skybox skybox2.psf
+
+player					0.0 20.0 0.0
+
+light_directional		1.0 1.0 1.0		0.15 0.5	1.0 1.0 1.0
+
+light_point			1.0 1.0 1.0		1.0 5.0		0.0 0.0 0.0		1.0 0.0 0.01

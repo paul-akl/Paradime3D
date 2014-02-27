@@ -1,0 +1,13 @@
+#version 330 core
+
+layout(location = 0) out vec3 diffuseBuffer;
+
+uniform sampler2D textureSampler;
+
+in vec2 texCoord;
+
+void main()
+{    
+	diffuseBuffer	= texture2D(textureSampler, texCoord).rgb;
+	//diffuseBuffer = vec3(gl_FragCoord.z, gl_FragCoord.z, gl_FragCoord.z);
+}

@@ -14,8 +14,8 @@ namespace Common
 	class ObjectParameters
 	{
 	public:
-
 		ObjectParameters();
+		void calcModelMat();
 
 		bool modified;
 		Math3d::Vec3f	positionVec,
@@ -25,7 +25,6 @@ namespace Common
 		Math3d::Mat4f	modelMat,
 						modelViewMat,
 						modelViewProjMat;
-
 	};
 	class InputState
 	{
@@ -71,6 +70,7 @@ namespace Common
 					vsyncKey,
 					clipMouseKey,
 					debug1Key,
+					debug2Key,
 					escKey,
 					backKey,
 					arrowUpKey,

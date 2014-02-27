@@ -5,6 +5,7 @@
 #include <vector>
 
 #include <assimp\Importer.hpp>
+#include <assimp\ProgressHandler.hpp>
 #include <assimp\scene.h>
 #include <GL/glew.h>
 #include <SDL.h>
@@ -27,7 +28,7 @@ namespace ModelLoader
 
 		void load(std::string fileName_arg);
 		void loadBuffer();
-		void render(ShaderLoader::Shader *shader_arg);
+		void render(ShaderLoader::BaseShader *shader_arg);
 
 		std::string modelName;
 
@@ -62,6 +63,7 @@ namespace ModelLoader
 		void loadFromScene(const aiScene* assimpScene_arg);
 		void loadFromMesh(const aiMesh* assimpMesh_arg);
 	};
+
 	class Model
 	{
 	public:
@@ -81,6 +83,26 @@ namespace ModelLoader
 			void loadFromScene(const aiScene* assimpScene_arg);
 
 		};
+		
+		class pHandle : public Assimp::ProgressHandler
+		{
+		public:
+			int count;
+			pHandle()
+			{
+				count = 0;
+			}
+
+			~pHandle()
+			{
+
+			}
+			bool Update(float percentage)
+			{
+				count++;
+				return false;
+			}
+		};
 
 		Model(std::string fileName_arg);
 		~Model();
@@ -91,7 +113,7 @@ namespace ModelLoader
 		void loadBuffer();
 		void unloadBuffer();
 
-		void render(std::vector<TextureLoader::Texture2D*> *texturePool_arg, ShaderLoader::Shader *shader_arg);
+		void render(std::vector<TextureLoader::Texture2D*> *texturePool_arg, ShaderLoader::BaseShader *shader_arg);
 		bool compareName(std::string *modelName_arg);
 
 		unsigned int pointerCounter, numMaterials;

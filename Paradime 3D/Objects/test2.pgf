@@ -1,9 +1,12 @@
-model sphere.obj
-
-//vertex_shader TransformVertexShader.vertexshader
-//fragment_shader TextureFragmentShader.fragmentshader
-
-vertex_shader geometryPass.pvert
-fragment_shader geometryPass.pfrag
-
-rotation 90.0f 0.0f 0.0f
+{
+	"File type": "Game object",
+	"Model": {
+		"File name": "Nanosuit.obj",
+		"Rotation": "0.0, 0.0, 0.0",
+		"Scale": "1.0, 1.0, 1.0"
+	},
+	"Shaders": {
+		"Vertex": "testShader.pvert",
+		"Fragment": "testShader.pfrag"
+	}
+}

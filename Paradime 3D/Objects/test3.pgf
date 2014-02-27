@@ -1,10 +1,28 @@
-model cube.obj
-material 0 uvtemplate.DDS
-
-//vertex_shader TransformVertexShader.vertexshader
-//fragment_shader TextureFragmentShader.fragmentshader
-
-vertex_shader geometryPass.pvert
-fragment_shader geometryPass.pfrag
-
-rotation 90.0f 0.0f 0.0f
+{
+	"File type": "Game object",
+	"Model": {
+		"File name": "landscape.obj",
+		"Rotation": "0.0, 0.0, 0.0",
+		"Scale": "1.0, 1.0, 1.0"
+	},
+	"Shaders": {
+		"Vertex": "geometryPass.pvert",
+		"Fragment": "geometryPass.pfrag"
+	},
+	"Materials": {
+		"Diffuse": [
+			{
+			"Name": "rocky_dirt.png",
+			"Index": "0"
+			},
+			{
+			"Name": "rocky_dirt.png",
+			"Index": "1"
+			},
+			{
+			"Name": "rocky_dirt.png",
+			"Index": "2"
+			}
+		]
+	}
+}

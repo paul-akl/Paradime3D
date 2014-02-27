@@ -1,8 +1,7 @@
-#include <iostream>
-
 #include <assimp\Importer.hpp>
 #include <assimp\scene.h>
 #include <assimp\postprocess.h>
+#include <iostream>
 
 #include "CurrentUpdateState.h"
 #include "Loader_Model.h"
@@ -38,7 +37,7 @@ namespace ModelLoader
 		modelName = fileName_arg;
 
 		const aiScene* assimpScene = assimpImporter.ReadFile(Config::path::models_path + modelName, 
-			aiProcess_CalcTangentSpace | aiProcess_Triangulate | aiProcess_SortByPType);
+			aiProcess_GenSmoothNormals | aiProcess_ValidateDataStructure | aiProcess_FindInvalidData | aiProcess_Triangulate);
 
 		if(!assimpScene)
 			throw Message::messageCode(MSG_ERROR, MSG_MODEL, modelName + " failed to load (" + assimpImporter.GetErrorString() + ").");
@@ -65,7 +64,7 @@ namespace ModelLoader
 		// Make sure the VAO is not changed from the outside
 		glBindVertexArray(0);
 	}
-	void GenericModel::render(ShaderLoader::Shader *shader_arg)
+	void GenericModel::render(ShaderLoader::BaseShader *shader_arg)
 	{
 		// Bind Vertex Array Object
 		glBindVertexArray(VAO);
@@ -77,7 +76,7 @@ namespace ModelLoader
 		shader_arg->updateModel();
 
 		// Render each mesh
-		for (unsigned int i=0; i < meshPoolSize; i++) 
+		for (int i=0; i < meshPoolSize; i++) 
 		{
 			// Update the uniforms required by each draw call
 			shader_arg->updateMesh();
@@ -161,8 +160,14 @@ namespace ModelLoader
 		modelName = fileName_arg;
 		pointerCounter = 1;
 
+		pHandle * handle;
+
+		handle = new pHandle();
+
+		assimpImporter.SetProgressHandler(handle);
+
 		const aiScene* assimpScene = assimpImporter.ReadFile(Config::path::models_path + modelName, 
-			aiProcess_CalcTangentSpace | aiProcess_Triangulate | aiProcess_SortByPType);
+			aiProcess_GenSmoothNormals | aiProcess_Triangulate | aiProcess_SortByPType);
 
 		if(!assimpScene)
 			throw Message::messageCode(MSG_ERROR, MSG_MODEL, modelName + " failed to load (" + assimpImporter.GetErrorString() + ").");
@@ -262,6 +267,7 @@ namespace ModelLoader
 		for(unsigned int i=0; i < assimpMesh_arg->mNumVertices; i++)
 		{
 			positions.push_back(Math3d::Vec3f(assimpMesh_arg->mVertices[i].x, assimpMesh_arg->mVertices[i].y, assimpMesh_arg->mVertices[i].z));
+			//if(assimpMesh_arg->
 			normals.push_back(Math3d::Vec3f(assimpMesh_arg->mNormals[i].x, assimpMesh_arg->mNormals[i].y, assimpMesh_arg->mNormals[i].z));
 			if(textureCoordsExist)
 				texCoords.push_back(Math3d::Vec2f(assimpMesh_arg->mTextureCoords[0][i].x, assimpMesh_arg->mTextureCoords[0][i].y));
@@ -294,7 +300,7 @@ namespace ModelLoader
 			return Config::texture::default_texture;
 		}
 	}
-	void Model::render(std::vector<TextureLoader::Texture2D*> *texturePool_arg, ShaderLoader::Shader *shader_arg)
+	void Model::render(std::vector<TextureLoader::Texture2D*> *texturePool_arg, ShaderLoader::BaseShader *shader_arg)
 	{
 		// Bind Vertex Array Object
 		glBindVertexArray(VAO);
@@ -306,7 +312,7 @@ namespace ModelLoader
 		shader_arg->updateModel();
 
 		// Render each mesh
-		for (unsigned int i=0; i < meshPoolSize; i++)
+		for (int i=0; i < meshPoolSize; i++)
 		{
 			// To avoid fatal error, check if there are enough materials in the vector, before binding
 			//if(meshPool[i].materialIndex < (*texturePool_arg).size())

@@ -10,6 +10,14 @@
 
 namespace TextureLoader
 {
+	enum textureWrapType
+	{
+		Repeat,
+		ClampToEdge,
+		ClampToBorder,
+		MirroredRepeat
+	};
+
 	class Texture2D
 	{
 	public:
@@ -23,6 +31,8 @@ namespace TextureLoader
 
 		bool compareFileName(std::string fileName_arg);
 		void bind();
+		void bind(int activeTextureUnit_arg);
+		void setWrap(int wrapType_arg);
 	};
 	class Texture3D
 	{

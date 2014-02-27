@@ -14,7 +14,7 @@ namespace Message
 		int type;
 		std::string message;
 	};
-	messageOrigin messageOrigins[12];
+	messageOrigin messageOrigins[13];
     int index = 0;
 	
 	messageCode::messageCode(int type_arg, int origin_arg, std::string message_arg)
@@ -85,11 +85,12 @@ namespace Message
 		setType("Shader Compiler");	
 		setType("Game Object");
 		setType("Player Manager");
-		setType("Skybox");
+		setType("Sky");
 		setType("Lighting");
 		setType("Geometry Buffer");
 		setType("Scene Loader");
 		setType("Renderer");
+		setType("Config-File Loader");
 	}
 
 	std::string Message::toString(int int_arg)
@@ -119,5 +120,11 @@ namespace Message
 	std::string Message::toString(bool bool_arg)
 	{
 		return (bool_arg) ? "true" : "false";
+	}
+	std::string Message::toString(char char_arg)
+	{
+		std::string stringRet;
+		stringRet += char_arg;
+		return stringRet;
 	}
 }

@@ -1,23 +1,15 @@
-#include <functional>
-#include <iostream>
-#include <sstream>
-#include <string>
 
-// While a declaration of class Game has been provided in
-// gamestate.h, this was only a forward declaration
-// because we need to work with the implementation now
-// we need to include game.h here
 
 #include "Clock.h"
 #include "Config.h"
 #include "ErrorHandler.h"
 #include "Game.h"
 #include "GameObjects.h"
-#include "state_Play.h"
-
-
 #include "Math.h"
-#include <iostream>
+#include "state_Play.h"
+#include "ShadowMapDefRenderer.h"
+
+
 
 StatePlay::StatePlay(void)
 {
@@ -44,18 +36,29 @@ void StatePlay::init(Game &context)
 	Current::inputState = &inputs;
 	Current::perspective = &perspective;
 	Current::scene = new Scene();
-	Current::scene->loadScene(Config::path::maps_path + "test.pmap");
+	Current::scene->loadScene(Config::path::maps_path + "JSON.pmap");
 	Current::player = &Current::scene->player;
 
-	renderer.init();
+	//renderer = new ShadowMapDefRenderer();
+	renderer = new DeferredRenderer();
+	renderer->init();
 
 	Clock::CreateTimer(&displayFPS, 0, true, 200);
 }
 
 void StatePlay::update(Game &context)
 {
-	Current::player->update();
+	renderer->update();
 
+	Current::player->update();
+	
+	//	Math3d::Vec3f pos = Math3d::Vec3f(-50.0, -50.0, -50.0);
+		
+	//	pos.rotate(Current::scene->lighting->directionalLight->direction.z, Math3d::Vec3f(0.0, 0.0, 1.0));
+	//	pos.rotate(Current::scene->lighting->directionalLight->direction.x, Math3d::Vec3f(1.0, 0.0, 0.0));
+	//	pos.rotate(Current::scene->lighting->directionalLight->direction.y, Math3d::Vec3f(0.0, 1.0, 0.0));
+
+	//Current::player->currentCamera->viewMatrix.initCamera(pos + Current::player->position, Current::player->position, Math3d::Vec3f(0.0f, 1.0f, 0.0f));
 	Current::scene->update();
 }
 
@@ -65,7 +68,7 @@ void StatePlay::draw()
 	ShaderLoader::updateFrame();
 	
 	//Current::scene->render(); // Render the current map/scene (includes models, skybox, etc.)
-	renderer.renderScene();
+	renderer->renderScene();
 
 	OS::swapBuffers(); // Swap the OpenGL buffers
 }

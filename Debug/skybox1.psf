@@ -1,0 +1,9 @@
+posX temp.0002.bmp
+negX temp.0004.bmp
+posY temp.0006.bmp
+negY temp.0005.bmp
+posZ temp.0001.bmp
+negZ temp.0003.bmp
+vertex_shader skybox.pvs
+fragment_shader skybox.pfs
+model sphere.obj

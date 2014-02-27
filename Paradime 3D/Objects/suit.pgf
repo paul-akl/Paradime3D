@@ -1,0 +1,10 @@
+{
+	"File type": "Game object",
+	"Model": {
+		"File name": "Nanosuit.obj"
+	},
+	"Shaders": {
+		"Vertex": "geometryPass.pvert",
+		"Fragment": "geometryPass.pfrag"
+	}
+}

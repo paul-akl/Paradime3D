@@ -47,10 +47,45 @@ namespace TextureLoader
 	}
 	void Texture2D::bind()
 	{
-		if(textureHandle != *currentTexture)
-		{
+		//if(textureHandle != *currentTexture)
+		//{
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, textureHandle);
+		//}
+	}
+	void Texture2D::bind(int activeTextureUnit_arg)
+	{
+		glActiveTexture(GL_TEXTURE0 + activeTextureUnit_arg);
+		glBindTexture(GL_TEXTURE_2D, textureHandle);
+	}
+	void Texture2D::setWrap(int wrapType_arg)
+	{
+		switch(wrapType_arg)
+		{
+		case Repeat:
+			glBindTexture(GL_TEXTURE_2D, textureHandle);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+			break;
+			
+		case ClampToEdge:
+			glBindTexture(GL_TEXTURE_2D, textureHandle);
+			//bind();
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			break;
+			
+		case ClampToBorder:
+			glBindTexture(GL_TEXTURE_2D, textureHandle);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+			break;
+			
+		case MirroredRepeat:
+			glBindTexture(GL_TEXTURE_2D, textureHandle);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+			break;
 		}
 	}
 
@@ -148,7 +183,8 @@ namespace TextureLoader
 			char* Pixels = (char*)FreeImage_GetBits(bitmap);
 	
 			//FreeImage loads in BGR format, therefore swap of bytes is needed (Or usage of GL_BGR).
-			for(int i = 0; i<imageWidth*imageHeight; i++){
+			for(int i = 0; i<imageWidth*imageHeight; i++)
+			{
 				Texture2D[i * 4 + 0] = Pixels[i * 4 + 2];
 				Texture2D[i * 4 + 1] = Pixels[i * 4 + 1];
 				Texture2D[i * 4 + 2] = Pixels[i * 4 + 0];
@@ -158,12 +194,18 @@ namespace TextureLoader
 			//Generating the actual OpenGL Texture2D
 			glGenTextures(1, &TextureID);
 			glBindTexture(GL_TEXTURE_2D, TextureID);
-			glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA, imageWidth, imageHeight, 0, GL_RGBA,GL_UNSIGNED_BYTE,(GLvoid*)Texture2D );
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, Config::texture::gl_texture_minification);				//Texture2D filtering mode, when image is minimized
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, Config::texture::gl_texture_magnification);				//Texture2D filtering mode, when image is magnified
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, Config::texture::gl_texture_anisotropy);			//Texture2D anisitropic filtering
-		
-			//glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &TextureAnisotropicFilter);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imageWidth, imageHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid*)Texture2D);
+			if(Config::texture::generate_mipmaps)
+				glGenerateMipmap(GL_TEXTURE_2D);
+
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, Config::texture::gl_texture_minification);	//Texture2D filtering mode, when image is minimized
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, Config::texture::gl_texture_magnification);	//Texture2D filtering mode, when image is magnified
+			
+			GLfloat TextureAnisotropicFilter;
+			glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &TextureAnisotropicFilter);						// Get the maximum anisotropic filtering available
+			if(Config::texture::gl_texture_anisotropy < TextureAnisotropicFilter)							// Check if the current anisotropic filtering value
+				TextureAnisotropicFilter = (float)Config::texture::gl_texture_anisotropy;					// does not exceed the maximum available
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, (int)TextureAnisotropicFilter);	// Texture2D anisitropic filtering
 		}
 		else
 		{
@@ -231,6 +273,7 @@ namespace TextureLoader
 				return load3D(cubemap_arg);
 			}
 		}
+		return NULL; // Should never reach this, added to avoid a warning
 	}
 	GLuint load3DFromFile(Common::Cubemap *cubemap_arg)
 	{
@@ -266,7 +309,7 @@ namespace TextureLoader
 				//Generating the actual OpenGL Texture2D
 				glGenTextures(1, &TextureID);
 				glBindTexture(GL_TEXTURE_2D, TextureID);
-				glTexImage2D(texture3DTypes[i],0,GL_RGBA, imageWidth, imageHeight, 0, GL_RGBA,GL_UNSIGNED_BYTE,(GLvoid*)Texture2D );
+				glTexImage2D(texture3DTypes[i],0,GL_RGBA, imageWidth, imageHeight, 0, GL_RGBA,GL_UNSIGNED_BYTE,(GLvoid*)Texture2D);
 				
 				glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, Config::texture::gl_texture_minification);				//Texture2D filtering mode, when image is minimized
 				glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, Config::texture::gl_texture_magnification);				//Texture2D filtering mode, when image is magnified

@@ -16,6 +16,39 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{a0afef38-7262-4baa-9ee7-02cd50520c90}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Loaders">
+      <UniqueIdentifier>{81ebf127-3c32-4eb2-a646-dd56aa4b537e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Loaders\Header Files">
+      <UniqueIdentifier>{71141f70-f4f3-407f-b0ad-6d747dd5bd05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Loaders\Source Files">
+      <UniqueIdentifier>{018a90ad-2fba-4f22-89bb-985c7650416c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Maps">
+      <UniqueIdentifier>{7a9e5086-a172-4622-9475-547e602a91c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framebuffers">
+      <UniqueIdentifier>{c553c19c-a5f9-4b5e-8671-98bc7d09bde5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framebuffers\Header Files">
+      <UniqueIdentifier>{b8c54f43-9c42-4b36-bbc5-e6f538711a9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framebuffers\Source Files">
+      <UniqueIdentifier>{8af43285-0d70-40d0-b551-39d87c33f476}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Renderers">
+      <UniqueIdentifier>{ce79db00-2148-4b4e-94b5-257d45c6e003}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Renderers\Header Files">
+      <UniqueIdentifier>{fffd21de-a2f9-489a-a6b2-0abafd1aebbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Renderers\Source Files">
+      <UniqueIdentifier>{fc8ef502-1862-416b-b573-4cd8072466ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Objects">
+      <UniqueIdentifier>{f1141f64-6b70-44ec-b28f-a1d6c26dfcf6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Timer.cpp">
@@ -28,9 +61,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Label.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Game.cpp">
@@ -51,16 +81,7 @@
     <ClCompile Include="OS_Layer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Loader_Texture.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Loader_Model.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GameObjects.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Loader_Shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CommonClasses.cpp">
@@ -90,13 +111,46 @@
     <ClCompile Include="Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeometryBuffer.cpp">
+    <ClCompile Include="Utilities.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Loader_Model.cpp">
+      <Filter>Loaders\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Loader_Texture.cpp">
+      <Filter>Loaders\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Loader_Shader.cpp">
+      <Filter>Loaders\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sky.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Billboard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometryBuffer.cpp">
+      <Filter>Framebuffers\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Framebuffer.cpp">
+      <Filter>Framebuffers\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DeferredRenderer.cpp">
+      <Filter>Renderers\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Loader_Config.cpp">
+      <Filter>Loaders\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Skydome.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Utilities.cpp">
+    <ClCompile Include="ShadowMapBuffer.cpp">
+      <Filter>Framebuffers\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ShadowMapDefRenderer.cpp">
+      <Filter>Renderers\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ShadowMaps.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -108,9 +162,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="State_MainMenu.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Label.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GameState.h">
@@ -135,15 +186,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GameObjects.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Loader_Texture.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Loader_Model.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Loader_Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CommonClasses.h">
@@ -173,25 +215,54 @@
     <ClInclude Include="Scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GeometryBuffer.h">
+    <ClInclude Include="Utilities.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Loader_Texture.h">
+      <Filter>Loaders\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Loader_Model.h">
+      <Filter>Loaders\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Loader_Shader.h">
+      <Filter>Loaders\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Billboard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Sky.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Framebuffer.h">
+      <Filter>Framebuffers\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryBuffer.h">
+      <Filter>Framebuffers\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DeferredRenderer.h">
+      <Filter>Renderers\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>Renderers\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Loader_Config.h">
+      <Filter>Loaders\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Skydome.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Utilities.h">
+    <ClInclude Include="ShadowMapBuffer.h">
+      <Filter>Framebuffers\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadowMapDefRenderer.h">
+      <Filter>Renderers\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadowMaps.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="config.ini" />
-    <None Include="skybox1.psf" />
-    <None Include="Objects\test.pgf" />
-    <None Include="Maps\test.pmap" />
-    <None Include="Objects\test4.pgf" />
-    <None Include="Objects\car.pgf" />
-    <None Include="Objects\test2.pgf" />
-    <None Include="Objects\test3.pgf" />
     <None Include="Shaders\dirLightPass.pfrag">
       <Filter>Shaders</Filter>
     </None>
@@ -226,6 +297,114 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shaders\stencilPass.pvert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\testShader.pfrag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\testShader.pvert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\billboard.pfs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\billboard.pvs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\billboard.pgs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\skydome.pfs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\skydome.pvs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="skybox1.psf" />
+    <None Include="skybox2.psf" />
+    <None Include="Objects\car.pgf">
+      <Filter>Game Objects</Filter>
+    </None>
+    <None Include="Objects\city.pgf">
+      <Filter>Game Objects</Filter>
+    </None>
+    <None Include="Objects\sphere.pgf">
+      <Filter>Game Objects</Filter>
+    </None>
+    <None Include="Objects\suit.pgf">
+      <Filter>Game Objects</Filter>
+    </None>
+    <None Include="Objects\test.pgf">
+      <Filter>Game Objects</Filter>
+    </None>
+    <None Include="Objects\test.pobj">
+      <Filter>Game Objects</Filter>
+    </None>
+    <None Include="Objects\test2.pgf">
+      <Filter>Game Objects</Filter>
+    </None>
+    <None Include="Objects\test3.pgf">
+      <Filter>Game Objects</Filter>
+    </None>
+    <None Include="Objects\test4.pgf">
+      <Filter>Game Objects</Filter>
+    </None>
+    <None Include="Objects\plane.pgf">
+      <Filter>Game Objects</Filter>
+    </None>
+    <None Include="Objects\tower.pgf">
+      <Filter>Game Objects</Filter>
+    </None>
+    <None Include="Objects\JSON.pgf">
+      <Filter>Game Objects</Filter>
+    </None>
+    <None Include="skydome.sky" />
+    <None Include="Maps\city.pmap">
+      <Filter>Maps</Filter>
+    </None>
+    <None Include="Maps\cityWithLights.pmap">
+      <Filter>Maps</Filter>
+    </None>
+    <None Include="Maps\current.pmap">
+      <Filter>Maps</Filter>
+    </None>
+    <None Include="Maps\hugeCity.pmap">
+      <Filter>Maps</Filter>
+    </None>
+    <None Include="Maps\hugeCityWithLights.pmap">
+      <Filter>Maps</Filter>
+    </None>
+    <None Include="Maps\JSON.pmap">
+      <Filter>Maps</Filter>
+    </None>
+    <None Include="Maps\test.pmap">
+      <Filter>Maps</Filter>
+    </None>
+    <None Include="Maps\test1.pmap">
+      <Filter>Maps</Filter>
+    </None>
+    <None Include="Maps\test1WithLights.pmap">
+      <Filter>Maps</Filter>
+    </None>
+    <None Include="Maps\test2.pmap">
+      <Filter>Maps</Filter>
+    </None>
+    <None Include="Shaders\dirShadowMapPass.pfrag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\dirShadowMapPass.pvert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\dirBasicShadowMap.pfrag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\dirBasicShadowMap.pvert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\spotLightPass.pfrag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\spotLightPass.pvert">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

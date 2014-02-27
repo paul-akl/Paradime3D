@@ -1,0 +1,6 @@
+model sphere.obj
+
+vertex_shader testShader.pvert
+fragment_shader testShader.pfrag
+
+//rotation 0.0f 0.0f 0.0f

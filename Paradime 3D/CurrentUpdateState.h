@@ -21,7 +21,10 @@ namespace Current
 
 	extern GLuint	positionMap,
 					diffuseMap,
-					normalMap;
+					normalMap,
+					sunGlowMap,
+					skyMap,
+					dirShadowMap;
 
 	void init();
 }

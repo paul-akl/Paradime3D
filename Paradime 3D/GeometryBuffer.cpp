@@ -14,10 +14,8 @@ GeometryBuffer::GeometryBuffer()
 	for(int i=0; i < (sizeof(buffers) / sizeof(*buffers)); i++)
 		buffers[i] = 0;
 
-	geometryDrawBuffers[0] = GL_COLOR_ATTACHMENT0;
-	geometryDrawBuffers[1] = GL_COLOR_ATTACHMENT0 + 1;
-	geometryDrawBuffers[2] = GL_COLOR_ATTACHMENT0 + 2;
-	geometryDrawBuffers[3] = GL_COLOR_ATTACHMENT0 + 3;
+	for(int i=0; i < GBufferNumTextures; i++)
+		geometryDrawBuffers[i] = GL_COLOR_ATTACHMENT0 + i;
 
 	Message::show(MSG_INFO, MSG_GBUFFER, " handle has been created.");
 }
@@ -45,12 +43,12 @@ void GeometryBuffer::init()
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, FBO);
 
 	// Create geometry pass buffers
-	glGenTextures(sizeof(buffers) / sizeof(*buffers), buffers);
+	glGenTextures(GBufferNumTextures, buffers);
 	glGenTextures(1, &depthBuffer);
 	glGenTextures(1, &finalBuffer);
 
 	// Create textures
-	for(int i=0; i < (sizeof(buffers) / sizeof(*buffers)); i++)
+	for(int i=0; i < GBufferNumTextures; i++)
 	{
 		glBindTexture(GL_TEXTURE_2D, buffers[i]);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, Config::currentScreenWidth, Config::currentScreenHeight, 0, GL_RGB, GL_FLOAT, NULL);
@@ -65,6 +63,7 @@ void GeometryBuffer::init()
 	// Create depth buffer
 	glBindTexture(GL_TEXTURE_2D, depthBuffer);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH32F_STENCIL8, Config::currentScreenWidth, Config::currentScreenHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	//glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, Config::currentScreenWidth, Config::currentScreenHeight, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, NULL);	// For AMD GPUs at labs
 	glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, depthBuffer, 0);
 
 	// Create the final buffer, that gets renderred to the screen
@@ -78,7 +77,7 @@ void GeometryBuffer::init()
 		throw Message::messageCode(MSG_FATAL_ERROR, MSG_GBUFFER, "Geometry buffer has failed to load: " + bufferStatus);
 
 	// Restore the default FBO, so it doesn't get changed from the outside of the class
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	//glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
 	Current::positionMap = GBufferPosition;
 	Current::diffuseMap = GBufferDiffuse;
@@ -86,36 +85,40 @@ void GeometryBuffer::init()
 
 	Message::show(MSG_INFO, MSG_GBUFFER, "  has been initialized.");
 }
-void GeometryBuffer::initStencilShaders(std::string stencilVertShaderName_arg, std::string stencilFragShaderName_arg)
+void GeometryBuffer::reload()
 {
-	try
-	{
-		//stencilPassShader = ShaderLoader::load(stencilVertShaderName_arg, stencilFragShaderName_arg);
-	}
-	catch(Message::messageCode error_arg)
-	{
-		error_arg.display();
-	}
-}
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, FBO);
 
-void GeometryBuffer::updatePerFrame()
+	// Resize geometry textures
+	for(int i=0; i < GBufferNumTextures; i++)
+	{
+		glBindTexture(GL_TEXTURE_2D, buffers[i]);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, Config::currentScreenWidth, Config::currentScreenHeight, 0, GL_RGB, GL_FLOAT, NULL);
+	}
+	
+	// Resize depth buffer
+	glBindTexture(GL_TEXTURE_2D, depthBuffer);
+	//glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH32F_STENCIL8, Config::currentScreenWidth, Config::currentScreenHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, Config::currentScreenWidth, Config::currentScreenHeight, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, NULL);	// For AMD GPUs at labs
+
+	// Resize the final buffer
+	glBindTexture(GL_TEXTURE_2D, finalBuffer);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Config::currentScreenWidth, Config::currentScreenHeight, 0, GL_RGB, GL_FLOAT, NULL);
+}
+void GeometryBuffer::initFrame()
 {
+	Current::diffuseMap = GBufferDiffuse;
+
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, FBO);
 	glDrawBuffer(GL_COLOR_ATTACHMENT4);
     glClear(GL_COLOR_BUFFER_BIT);
 }
+
 void GeometryBuffer::initGeometryPass()
 {
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, FBO);
 
-    glDrawBuffers(sizeof(geometryDrawBuffers) / sizeof(*geometryDrawBuffers), geometryDrawBuffers);
-
-	/*GLenum DrawBuffers[] = { GL_COLOR_ATTACHMENT0, 
-						     GL_COLOR_ATTACHMENT1,
-						     GL_COLOR_ATTACHMENT2,
-							 GL_COLOR_ATTACHMENT3	};
-
-    //glDrawBuffers(sizeof(DrawBuffers) / sizeof(*DrawBuffers), DrawBuffers);*/
+    glDrawBuffers(GBufferNumTextures, geometryDrawBuffers);
 }
 void GeometryBuffer::initStencilPass()
 {
@@ -126,12 +129,11 @@ void GeometryBuffer::initLightPass()
 {
 	glDrawBuffer(GL_COLOR_ATTACHMENT4);
 	
-	for(int i=0; i < (sizeof(buffers) / sizeof(*buffers)); i++)
+	for(int i=0; i < GBufferNumTextures; i++)
 	{
 		glActiveTexture(GL_TEXTURE0 + i);		
 		glBindTexture(GL_TEXTURE_2D, buffers[GBufferPosition + i]);
 	}
-	//glActiveTexture(GL_TEXTURE0);
 }
 void GeometryBuffer::initFinalPass()
 {
@@ -149,14 +151,14 @@ void GeometryBuffer::drawBuffers()
 	//glBlitFramebuffer(0, 0, Config::currentScreenWidth, Config::currentScreenHeight, 0, Config::currentScreenHeight / 2, Config::currentScreenWidth / 2, Config::currentScreenHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
 	glBlitFramebuffer(	0, 0, Config::currentScreenWidth, Config::currentScreenHeight, 0, 0, Config::currentScreenWidth, Config::currentScreenHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
     
-	//glReadBuffer(GL_COLOR_ATTACHMENT1);
-	//glBlitFramebuffer(0, 0, Config::currentScreenWidth, Config::currentScreenHeight, Config::currentScreenWidth / 2, Config::currentScreenHeight / 2, Config::currentScreenWidth, Config::currentScreenHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+	glReadBuffer(GL_COLOR_ATTACHMENT1);
+	glBlitFramebuffer(0, 0, Config::currentScreenWidth, Config::currentScreenHeight, Config::currentScreenWidth / 2, Config::currentScreenHeight / 2, Config::currentScreenWidth, Config::currentScreenHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
     
-	//glReadBuffer(GL_COLOR_ATTACHMENT2);
-	//glBlitFramebuffer(0, 0, Config::currentScreenWidth, Config::currentScreenHeight, 0, 0, Config::currentScreenWidth / 2, Config::currentScreenHeight / 2, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+	glReadBuffer(GL_COLOR_ATTACHMENT2);
+	glBlitFramebuffer(0, 0, Config::currentScreenWidth, Config::currentScreenHeight, 0, 0, Config::currentScreenWidth / 2, Config::currentScreenHeight / 2, GL_COLOR_BUFFER_BIT, GL_LINEAR);
 	
-    //glReadBuffer(GL_COLOR_ATTACHMENT3);
-	//glBlitFramebuffer(0, 0, Config::currentScreenWidth, Config::currentScreenHeight, Config::currentScreenWidth / 2, 0, Config::currentScreenWidth, Config::currentScreenHeight / 2, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+    glReadBuffer(GL_COLOR_ATTACHMENT3);
+	glBlitFramebuffer(0, 0, Config::currentScreenWidth, Config::currentScreenHeight, Config::currentScreenWidth / 2, 0, Config::currentScreenWidth, Config::currentScreenHeight / 2, GL_COLOR_BUFFER_BIT, GL_LINEAR);
 	
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);

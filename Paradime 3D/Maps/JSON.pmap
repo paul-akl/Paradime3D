@@ -1,0 +1,164 @@
+{
+	"game objects": 
+	[
+//		{
+//			"name": "test3.pgf",
+//			"position": "0.0, -2.0, 0.0",
+//			"rotation": "0.0, 0.0, 0.0",
+//			"scale": "4000.0, 4000.0, 4000.0"
+//		},
+//		{
+//			"name": "tower.pgf",
+//			"position": "0.0, 0.0, 0.0",
+//			"rotation": "0.0, 0.0, 0.0",
+//			"scale": "1.0, 1.0, 1.0"
+//		},
+		{
+			"name": "plane.pgf",
+			"position": "0.0, -5.0, 0.0",
+			"rotation": "0.0, 0.0, 0.0",
+			"scale": "1.0, 1.0, 1.0"
+		},
+		{
+			"name": "plane.pgf",
+			"position": "4000.0, -5.0, 0.0",
+			"rotation": "0.0, 0.0, 0.0",
+			"scale": "1.0, 1.0, 1.0"
+		},
+		{
+			"name": "plane.pgf",
+			"position": "4000.0, -5.0, 4000.0",
+			"rotation": "0.0, 0.0, 0.0",
+			"scale": "1.0, 1.0, 1.0"
+		},
+		{
+			"name": "plane.pgf",
+			"position": "4000.0, -5.0, -4000.0",
+			"rotation": "0.0, 0.0, 0.0",
+			"scale": "1.0, 1.0, 1.0"
+		},
+		{
+			"name": "plane.pgf",
+			"position": "0.0, -5.0, 4000.0",
+			"rotation": "0.0, 0.0, 0.0",
+			"scale": "1.0, 1.0, 1.0"
+		},
+		{
+			"name": "plane.pgf",
+			"position": "0.0, -5.0, -4000.0",
+			"rotation": "0.0, 0.0, 0.0",
+			"scale": "1.0, 1.0, 1.0"
+		},
+		{
+			"name": "plane.pgf",
+			"position": "-4000.0, -5.0, 0.0",
+			"rotation": "0.0, 0.0, 0.0",
+			"scale": "1.0, 1.0, 1.0"
+		},
+		{
+			"name": "plane.pgf",
+			"position": "-4000.0, -5.0, 4000.0",
+			"rotation": "0.0, 0.0, 0.0",
+			"scale": "1.0, 1.0, 1.0"
+		},
+		{
+			"name": "plane.pgf",
+			"position": "-4000.0, -5.0, -4000.0",
+			"rotation": "0.0, 0.0, 0.0",
+			"scale": "1.0, 1.0, 1.0"
+		},
+		{
+			"name": "suit.pgf",
+			"position": "0.0, 0.0, 0.0",
+			"rotation": "0.0, 0.0, 0.0",
+			"scale": "1.0, 1.0, 1.0"
+		},
+		{
+			"name": "suit.pgf",
+			"position": "5.0, 0.0, 0.0",
+			"rotation": "0.0, 0.0, 0.0",
+			"scale": "1.0, 1.0, 1.0"
+		},
+		{
+			"name": "suit.pgf",
+			"position": "7.5, 0.0, 0.0",
+			"rotation": "0.0, 0.0, 0.0",
+			"scale": "1.0, 1.0, 1.0"
+		},
+		{
+			"name": "suit.pgf",
+			"position": "-5.0, 0.0, 0.0",
+			"rotation": "0.0, 0.0, 0.0",
+			"scale": "1.0, 1.0, 1.0"
+		},
+		{
+			"name": "suit.pgf",
+			"position": "-7.5, 0.0, 0.0",
+			"rotation": "0.0, 0.0, 0.0",
+			"scale": "1.0, 1.0, 1.0"
+		},
+		{
+			"name": "test2.pgf",
+			"position": "0.0, 0.0, 0.0",
+			"rotation": "0.0, 0.0, 0.0",
+			"scale": "1.0, 1.0, 1.0"
+		},
+		{
+			"name": "test3.pgf",
+			"position": "0.0, -7.5, 0.0",
+			"rotation": "0.0, 0.0, 0.0",
+			"scale": "8000.0, 8000.0, 8000.0"
+		}
+//		{
+//			"name": "plane.pgf",
+//			"position": "0.0, 10.0, 0.0",
+//			"rotation": "0.0, 0.0, 0.0",
+//			"scale": "1.0, 1.0, 1.0"
+//		}
+	],
+	"lighting": 
+	{
+		"directional": 
+		{
+				"color": "1.0, 1.0, 1.0",
+				"direction": "-120.0, 1.0, 1.0",
+				"ambient intensity": "0.1",
+				"diffuse intensity": "0.6"
+		},
+		"point": 
+		[
+			{
+				"color": "1.0, 1.0, 1.0",
+				"position": "0.0, 4.0, 50.0",
+				"ambient intensity": "0.1",
+				"diffuse intensity": "1.0",
+				"constant attenuation": "1.0",
+				"linear attenuation": "0.0",
+				"quadratic attenuation": "0.01"
+			}
+		],
+		"spot":
+		[
+			{
+				"color": "1.0, 1.0, 1.0",
+				"position": "0.0, 0.0, 0.0",
+				"direction": "1.0, 1.0, 1.0",
+				"cutoff": "30",
+				"ambient intensity": "0.01",
+				"diffuse intensity": "1.5",
+				"constant attenuation": "1.0",
+				"linear attenuation": "0.0",
+				"quadratic attenuation": "0.001"
+			}
+		]
+	},
+	"sky": 
+	{
+		"name": "skydome.sky",
+		"type": "skydome"
+	},
+	"player": 
+	{
+		"position": "0.0, 4.0, 4.0"
+	}
+}

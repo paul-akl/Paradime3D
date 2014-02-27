@@ -13,7 +13,6 @@
 #include <string>
 
 #include "GameState.h"
-#include "label.h"
 #include "OS_Layer.h"
 
 #include "Clock.h"

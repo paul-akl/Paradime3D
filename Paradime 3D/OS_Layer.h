@@ -24,6 +24,7 @@ namespace OS
 	void setFullscreen(bool fullscreen_arg);
 	void setMouseDisplay(bool mouseDisplay_arg);
 	void resetMousePosition();
+	void resetFaceCulling();
 
 	void getWindowSize(int *width_arg, int *height_arg);
 	void testWindowSize();

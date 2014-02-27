@@ -1,0 +1,12 @@
+{
+	"File type": "Game object",
+	"Model": {
+		"File name": "Paris2010_0.obj",
+		"Rotation": "0.0, 0.0, 0.0",
+		"Scale": "1.0, 1.0, 1.0"
+	},
+	"Shaders": {
+		"Vertex": "geometryPass.pvert",
+		"Fragment": "geometryPass.pfrag"
+	}
+}

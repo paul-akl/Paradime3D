@@ -28,7 +28,9 @@ uniform	DirectionalLight directionalLight;
 
 uniform float	specularIntensity;
 uniform float	specularPower;
+uniform float	fogDensity;
 
+uniform vec3	fogColor;
 uniform vec3	cameraPos;
 uniform vec2	screenSize;
 
@@ -36,11 +38,15 @@ vec4 calcLightInternal(BaseLight light_arg, vec3 lightDirection_arg, vec3 worldP
 {
     vec4  ambientColor	= vec4(light_arg.color, 1.0) * light_arg.ambientIntensity;
     float diffuseFactor = dot(normal_arg, -lightDirection_arg);
+	float angle = dot(vec3(0.0, 1.0, 0.0), -lightDirection_arg);
+	float gradient = 1.0;
+
+	gradient = min(0.5, angle);
 
     vec4 diffuseColor  = vec4(0.0, 0.0, 0.0, 0.0);
     vec4 specularColor = vec4(0.0, 0.0, 0.0, 0.0);
 
-    if(diffuseFactor > 0) 
+    if(diffuseFactor > 0)
 	{
         diffuseColor = vec4(light_arg.color, 1.0) * light_arg.diffuseIntensity * diffuseFactor;
 
@@ -54,9 +60,17 @@ vec4 calcLightInternal(BaseLight light_arg, vec3 lightDirection_arg, vec3 worldP
         }
     }
 
-    return (ambientColor + diffuseColor + specularColor);
+    return (ambientColor + diffuseColor + specularColor) * (gradient * 2);
 }
 
+float calcLightFactor(vec3 lightDirection_arg)
+{
+	float angle = dot(vec3(0.0, 1.0, 0.0), -lightDirection_arg);
+	float gradient = 1.0;
+	gradient = min(0.5, angle);
+
+    return (gradient * 2);
+}
 
 vec4 calcDirectionalLight(vec3 worldPos_arg, vec3 normal_arg)
 {
@@ -68,6 +82,15 @@ vec2 calcTexCoord()
     return gl_FragCoord.xy / screenSize;
 }
 
+float calcFogFactor(vec3 worldPos_arg, vec3 cameraPos_arg, float fogDensity_arg)
+{
+	float distance = sqrt(	(worldPos_arg.x - cameraPos_arg.x)*(worldPos_arg.x - cameraPos_arg.x) +
+							(worldPos_arg.y - cameraPos_arg.y)*(worldPos_arg.y - cameraPos_arg.y) +
+							(worldPos_arg.z - cameraPos_arg.z)*(worldPos_arg.z - cameraPos_arg.z)	);
+
+	return (1.0 - clamp(exp(-pow(fogDensity_arg * distance, 2.0)), 0.0, 1.0));
+}
+
 void main()
 {    
     vec2 texCoord = calcTexCoord();
@@ -76,7 +99,10 @@ void main()
 	vec3 normal = texture(normalMap, texCoord).xyz;
 	normal = normalize(normal);
 
-	fragColor = vec4(color, 1.0) * calcDirectionalLight(worldPos, normal);
-	
-	//calcLightInternal(directionalLight.base, directionalLight.direction, worldPos, normal);
+	float fogFactor = calcFogFactor(worldPos, cameraPos, fogDensity);
+
+	vec4 fogColorWithLight = vec4(fogColor, 1.0) * calcLightFactor(directionalLight.direction);
+	vec4 lightColor = vec4(color, 1.0) * calcDirectionalLight(worldPos, normal);
+
+	fragColor = mix(lightColor, fogColorWithLight, fogFactor);
 }

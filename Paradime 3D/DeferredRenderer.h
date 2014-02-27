@@ -1,34 +1,36 @@
 #ifndef DEFERRED_RENDERER
 #define DEFERRED_RENDERER
 
+#include "Renderer.h"
 #include "Scene.h"
 
-class DeferredRenderer
+class DeferredRenderer : public Renderer
 {
 public:
 
 	DeferredRenderer();
 	~DeferredRenderer();
 
-	void init();
+	virtual void init();
+	
+	virtual void update();
+	virtual void renderScene();
 
-	void renderScene();
+protected:
 
-private:
-
-	ModelLoader::GenericModel *dirLightQuad, *pointLightSphere;
-	ShaderLoader::Shader *dirLightShader, *pointLightShader, *spotLightShader, *stencilPassShader;
+	ModelLoader::GenericModel *dirLightQuad, *pointLightSphere, *spotLightCone;
+	ShaderLoader::VertFragShader *dirLightShader, *pointLightShader, *spotLightShader, *stencilPassShader;
 	
 	GeometryBuffer gBuffer;
 
-	void geometryPass();
-	void stencilPass();
-	void dirLightPass();
-	void pointLightPass();
-	void spotLightPass();
-	void skyboxPass();
-	void finalPass();
-	void debugDrawBuffers();
+	virtual void geometryPass();
+	virtual void stencilPass();
+	virtual void dirLightPass();
+	virtual void pointLightPass();
+	virtual void spotLightPass();
+	virtual void skyboxPass();
+	virtual void finalPass();
+	virtual void debugDrawBuffers();
 };
 
 #endif

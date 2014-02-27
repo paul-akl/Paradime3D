@@ -4,19 +4,19 @@
 //#define _USE_MATH_DEFINES
 
 #include <cmath>
-#include <iostream>
+//#include <iostream>
 
-#define M_E			2.71828182845904523536
-#define M_LOG2E		1.44269504088896340736
-#define M_LOG10E	0.434294481903251827651
-#define M_LN2		0.693147180559945309417
-#define M_LN10		2.30258509299404568402
-#define M_PI		3.14159265358979323846
-#define M_PI_2		1.57079632679489661923
-#define M_PI_4		0.785398163397448309616
-#define M_SQRTPI	1.12837916709551257390
-#define M_SQRT2		1.41421356237309504880
-#define M_SQRT1_2	0.707106781186547524401
+#define E			2.71828182845904523536
+#define LOG2E		1.44269504088896340736
+#define LOG10E		0.434294481903251827651
+#define LN2			0.693147180559945309417
+#define LN10		2.30258509299404568402
+#define PI			3.14159265358979323846
+#define PI_2		1.57079632679489661923
+#define PI_4		0.785398163397448309616
+#define SQRTPI		1.12837916709551257390
+#define SQRT2		1.41421356237309504880
+#define SQRT1_2		0.707106781186547524401
 
 namespace Math3d
 {
@@ -26,8 +26,13 @@ namespace Math3d
 
 	    Vec2i()
 	    {
-			x = 0.0f;
-			y = 0.0f;
+			x = 0;
+			y = 0;
+	    }
+	    Vec2i(int x_arg)
+	    {
+	        x = x_arg;
+	        y = x_arg;
 	    }
 	    Vec2i(int x_arg, int y_arg)
 	    {
@@ -44,6 +49,11 @@ namespace Math3d
 			x = 0.0f;
 			y = 0.0f;
 	    }
+	    Vec2f(float x_arg)
+	    {
+	        x = x_arg;
+	        y = x_arg;
+	    }
 	    Vec2f(float x_arg, float y_arg)
 	    {
 	        x = x_arg;
@@ -59,6 +69,12 @@ namespace Math3d
 			x = 0.0f;
 			y = 0.0f;
 			z = 0.0f;
+	    }
+	    Vec3f(float x_arg)
+	    {
+	        x = x_arg;
+	        y = x_arg;
+	        z = x_arg;
 	    }
 	    Vec3f(float x_arg, float y_arg, float z_arg)
 	    {
@@ -156,9 +172,9 @@ namespace Math3d
 		}
 		const inline Vec3f horizontal(float horizontalAngle_arg)
 		{
-			*this = Vec3f(	sinf(horizontalAngle_arg - M_PI / 2.0f),
-							0,
-							cosf(horizontalAngle_arg - M_PI / 2.0f));
+			*this = Vec3f(	sinf(horizontalAngle_arg - (float)PI / 2.0f),
+							0.0f,
+							cosf(horizontalAngle_arg - (float)PI / 2.0f));
 			return *this;
 		}
 	
@@ -182,6 +198,13 @@ namespace Math3d
 			y = 0.0f;
 			z = 0.0f;
 			w = 0.0f;
+	    }
+	    Vec4f(float x_arg)
+	    {
+	        x = x_arg;
+	        y = x_arg;
+	        z = x_arg;
+	        w = x_arg;
 	    }
 	    Vec4f(float x_arg, float y_arg, float z_arg, float w_arg)
 	    {
@@ -342,6 +365,13 @@ namespace Math3d
 			m[2] = 0.0f; m[6] = 0.0f; m[10] = 1.0f;	m[14] = 0.0f;
 			m[3] = 0.0f; m[7] = 0.0f; m[11] = 0.0f;	m[15] = 1.0f;
 		}
+		Mat4f(float m_arg)
+		{
+			m[0] = m_arg; m[4] = m_arg; m[8]  = m_arg; m[12] = m_arg;
+			m[1] = m_arg; m[5] = m_arg; m[9]  = m_arg; m[13] = m_arg;
+			m[2] = m_arg; m[6] = m_arg; m[10] = m_arg; m[14] = m_arg;
+			m[3] = m_arg; m[7] = m_arg; m[11] = m_arg; m[15] = m_arg;
+		}
 		Mat4f(float m_arg[16])
 		{
 			m[0] = m_arg[0]; m[4] = m_arg[4]; m[8]  = m_arg[8];	 m[12] = m_arg[12];
@@ -412,6 +442,7 @@ namespace Math3d
 		void perspective(float FOV_arg, int screenWidth_arg, int screenHeight_arg, float zNear, float zFar);
 		void perspective(float FOV_arg, float aspectRatio_arg, float zNear_arg, float zFar_arg);
 		void initCamera(const Vec3f& position_arg, const Vec3f& target_arg, const Vec3f& up_arg);
+		void ortho(float left_arg, float right_arg, float down_arg, float up_arg, float zNear_arg, float zFar_arg);
 		
 		const Mat4f operator*=(const Mat4f& mat4f_arg);
 	};

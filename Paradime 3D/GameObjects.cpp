@@ -11,7 +11,7 @@ GameObjects::GameObjects()
 }
 GameObjects::~GameObjects()
 {
-
+	objectPool.clear();
 }
 
 void GameObjects::init()
@@ -63,8 +63,14 @@ void GameObjects::render()
 	//ShaderLoader::updateFrame();
 
 	// Render each object in the object pool
-	for(int i=0; i < objectPool.size(); i++)
+	for(std::vector<Object*>::size_type i=0; i < objectPool.size(); i++)
 		objectPool[i]->render();
+}
+void GameObjects::render(ShaderLoader::BaseShader *shader_arg)
+{
+	// Render each object in the object pool with a specified shader
+	for(std::vector<Object*>::size_type i=0; i < objectPool.size(); i++)
+		objectPool[i]->render(shader_arg);
 }
 void GameObjects::update()
 {
@@ -138,6 +144,12 @@ GameObjects::Object::Object(std::string fileName_arg)
 }
 GameObjects::Object::~Object()
 {
+	delete model;
+	delete shader;
+	delete objectParameters;
+	for(std::vector<TextureLoader::Texture2D*>::size_type i=0; i < texturePool.size(); i++)
+		TextureLoader::unload2D(texturePool[i]->fileName);
+
 	Message::show(MSG_INFO, MSG_OBJECT, objectFileName + " has been removed from memory.");
 }
 
@@ -150,6 +162,14 @@ void GameObjects::Object::render()
 	// Render the model
 	model->render(&texturePool, shader);
 }
+void GameObjects::Object::render(ShaderLoader::BaseShader *shader_arg)
+{
+	// Set the current object parameters required for updating uniforms
+	Current::objectParameters = objectParameters;
+
+	// Render the model
+	model->render(&texturePool, shader_arg);
+}
 void GameObjects::Object::update()
 {
 
@@ -160,91 +180,110 @@ bool GameObjects::Object::compareFileName(std::string fileName_arg)
 }
 void GameObjects::Object::loadFromFile(std::string fileName_arg)
 {
-	std::ifstream configFile;
-	std::string singleWord, nextWord;
-	std::vector<std::string> parameterWords;
-	bool lastPartFound = false;
+	gameObjectFile.import(fileName_arg);
 
-	configFile.open(fileName_arg, std::ios::in);
-	
-	if(configFile.fail())
+	ConfigFile::Node *tempNode, *valueNode,
+					 *rootNode = gameObjectFile.getRootNode();
+
+	tempNode = rootNode->getNode("Model");
+	if(tempNode != NULL)
 	{
-		throw Message::messageCode(MSG_FATAL_ERROR, MSG_OBJECT, fileName_arg + ": Has failed to load.");
-	}
-	
-	while(!configFile.eof())
-	{
-		configFile >> singleWord;
-
-		lastPartFound = false;
-
-		if(*singleWord.begin() == '"')
+		valueNode = tempNode->getNode("File name");
+		if(valueNode != NULL)
+			objectLoaderParam.modelName = valueNode->value->getString();
+		else
 		{
-			while(!lastPartFound)
+			// NO MODEL NAME ERROR
+		}
+
+		valueNode = tempNode->getNode("Rotation");
+		if(valueNode != NULL)
+			objectParameters->rotationVec = valueNode->value->getVec3f();
+
+		valueNode = tempNode->getNode("Scale");
+		if(valueNode != NULL)
+			objectParameters->scaleVec = valueNode->value->getVec3f();
+	}
+	else
+	{
+		// NO MODEL ERROR
+	}
+
+	tempNode = rootNode->getNode("Shaders");
+	if(tempNode != NULL)
+	{
+		valueNode = tempNode->getNode("Vertex");
+		if(valueNode != NULL)
+			objectLoaderParam.vertexShaderName = valueNode->value->getString();
+		else
+		{
+			// NO VERTEX SHADER NAME ERROR
+		}
+
+		valueNode = tempNode->getNode("Fragment");
+		if(valueNode != NULL)
+			objectLoaderParam.fragmentShaderName = valueNode->value->getString();
+		else
+		{
+			// NO FRAGMENT SHADER NAME ERROR
+		}
+	}
+	else
+	{
+		// NO SHADER ERROR
+	}
+
+	tempNode = rootNode->getNode("Materials");
+	if(tempNode != NULL)
+	{
+		int indexTemp = 0;
+
+		tempNode = tempNode->getNode("Diffuse");
+		if(tempNode != NULL)
+		{
+			for(std::vector<ConfigFile::ArrayNode*>::size_type i=0; i < tempNode->arrayNodes.size(); i++)
 			{
-				configFile >> nextWord;
-				singleWord+= " " + nextWord;
-					
-				if(*singleWord.rbegin() == '"')
-				{
-					singleWord.erase(0, 1);
-					singleWord.erase(singleWord.size() - 1, singleWord.size());
-						
-					lastPartFound = true;
-				}
+				valueNode = tempNode->arrayNodes[i]->getNode("Index");
+				if(valueNode != NULL)
+					indexTemp = valueNode->value->getInt();
 				else
-					if(configFile.eof())
-						throw Message::messageCode(MSG_ERROR, MSG_OBJECT, fileName_arg + ": Object file is missing \" (Quotation marks).");
+				{
+					// NO INDEX ERROR
+				}
+
+				valueNode = tempNode->arrayNodes[i]->getNode("Name");
+				if(valueNode != NULL)
+					objectLoaderParam.materialsFromFile.push_back(new ObjectLoaderParameters::MaterialNameAndIndex(valueNode->value->getString(), indexTemp));
+				else
+				{
+					// NO MATERIAL NAME ERROR
+				}
 			}
 		}
+	
+		tempNode = (rootNode->getNode("Materials"))->getNode("Normal");
+		if(tempNode != NULL)
+		{
+			for(std::vector<ConfigFile::ArrayNode*>::size_type i=0; i < tempNode->arrayNodes.size(); i++)
+			{
+				valueNode = tempNode->arrayNodes[i]->getNode("Index");
+				if(valueNode != NULL)
+					indexTemp = valueNode->value->getInt();
+				else
+				{
+					// NO INDEX ERROR
+				}
 
-		parameterWords.push_back(singleWord);
-	}
-		
-	configFile.close();
-
-	for(unsigned int i=0; i < parameterWords.size(); i++)
-	{
-		if(parameterWords[i] == "material")
-		{
-			objectLoaderParam.materialsFromFile.push_back(new ObjectLoaderParameters::MaterialNameAndIndex(parameterWords[i+2], std::atoi(parameterWords[i+1].c_str())));
-			i += 2;
-			continue;
-		}
-
-		if(parameterWords[i] == "model")
-		{
-			objectLoaderParam.modelName = parameterWords[i+1];
-			i++;
-			continue;
-		}
-
-		if(parameterWords[i] == "vertex_shader")
-		{
-			objectLoaderParam.vertexShaderName = parameterWords[i+1];
-			i++;
-			continue;
-		}
-			
-		if(parameterWords[i] == "fragment_shader")
-		{
-			objectLoaderParam.fragmentShaderName = parameterWords[i+1];
-			i++;
-			continue;
-		}
-			
-		if(parameterWords[i] == "rotation")
-		{
-			objectParameters->rotationVec = Math3d::Vec3f(std::atof(parameterWords[i+1].c_str()), std::atof(parameterWords[i+2].c_str()), std::atof(parameterWords[i+3].c_str()));
-			i += 3;
-			continue;
-		}
-
-		if(parameterWords[i] == "scale")
-		{
-			objectParameters->scaleVec = Math3d::Vec3f(std::atof(parameterWords[i+1].c_str()), std::atof(parameterWords[i+2].c_str()), std::atof(parameterWords[i+3].c_str()));
-			i += 3;
-			continue;
+				valueNode = tempNode->arrayNodes[i]->getNode("Name");
+				if(valueNode != NULL)
+				{
+					// TODO: Add Normal Map
+				}
+				else
+				{
+					// NO MATERIAL NAME ERROR
+				}
+			}
 		}
 	}
 }

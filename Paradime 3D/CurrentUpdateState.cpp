@@ -13,9 +13,12 @@ namespace Current
 	Lighting::SpotLight *spotLight = NULL;
 	double deltaTime = 0;
 	
-	GLuint	positionMap = 0,
-			diffuseMap = 0,
-			normalMap = 0;
+	GLuint	positionMap  = 0,
+			diffuseMap	 = 0,
+			normalMap	 = 0,
+			sunGlowMap	 = 0,
+			skyMap		 = 0,
+			dirShadowMap = 0;
 
 
 	void init()

@@ -1,12 +1,11 @@
 #ifndef GEOMETRY_BUFFER
 #define GEOMETRY_BUFFER
 
+#include "Framebuffer.h"
 #include "ErrorHandler.h"
 #include "Loader_Shader.h"
 
-#define numGBufferTextures	
-
-class GeometryBuffer
+class GeometryBuffer : public Framebuffer
 {
 public:
 
@@ -21,11 +20,11 @@ public:
 
 	GeometryBuffer();
 	~GeometryBuffer();
+	
+	virtual void init();
+	void reload();
+	void initFrame();
 
-	void init();
-	void initStencilShaders(std::string stencilVertShaderName_arg, std::string stencilFragShaderName_arg);
-
-	void updatePerFrame();
 	void initGeometryPass();
 	void initStencilPass();
 
@@ -34,9 +33,9 @@ public:
 
 	void drawBuffers();
 
-private:
-	GLuint	FBO,
-			depthBuffer,
+protected:
+
+	GLuint	depthBuffer,
 			finalBuffer,
 			buffers[GBufferNumTextures];
 

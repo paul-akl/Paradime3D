@@ -45,6 +45,8 @@ namespace Config
 		extern std::string default_texture;
 		extern GLenum gl_texture_minification;
 		extern GLenum gl_texture_magnification;
+		extern bool generate_mipmaps;
+		extern int number_of_mipmaps;
 		extern int gl_texture_anisotropy;
 		extern float default_specular_power;
 		extern float default_specular_intensity;
@@ -73,6 +75,7 @@ namespace Config
 		extern int vsync;
 		extern int clip_mouse;
 		extern int debug_1;
+		extern int debug_2;
 		extern int escKey;
 		extern int backKey;
 		extern int arrow_up;
@@ -93,8 +96,14 @@ namespace Config
 	namespace graphics
 	{
 		extern float FOV;
+		extern float fog_density;
+		extern float fog_color_x;
+		extern float fog_color_y;
+		extern float fog_color_z;
 		extern int pointlights_max;
 		extern int spotlights_max;
+		extern int dir_shadow_res_x;
+		extern int dir_shadow_res_y;
 	}
 	namespace renderer
 	{
@@ -108,6 +117,10 @@ namespace Config
 		extern std::string point_light_sphere;
 		extern std::string stencil_pass_vert_shader;
 		extern std::string stencil_pass_frag_shader;
+		extern std::string dir_shadowmap_vert_shader;
+		extern std::string dir_shadowmap_frag_shader;
+		extern std::string dir_basic_shadowmap_vert_shader;
+		extern std::string dir_basic_shadowmap_frag_shader;
 		extern float dir_light_quad_offset_x;
 		extern float dir_light_quad_offset_y;
 		extern float dir_light_quad_offset_z;
@@ -116,7 +129,7 @@ namespace Config
 		extern float dir_light_quad_rotation_z;
 	}
 
-	extern bool running, drawDebugBuffers;
+	extern bool running, resizeWindow, drawDebugBuffers;
 	extern int currentScreenWidth, currentScreenHeight;
 	extern std::string configFileName;
 

@@ -38,7 +38,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(SolutionDir)\VC\include;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;</IncludePath>
+    <IncludePath>$(SolutionDir)\VC\include;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include</IncludePath>
     <LibraryPath>$(SolutionDir)\VC\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -50,6 +50,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <ShowIncludes>false</ShowIncludes>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -75,6 +76,7 @@
   <ItemGroup>
     <ClCompile Include="AdaptiveUniformsFunctions.cpp" />
     <ClCompile Include="AdaptiveUniforms.cpp" />
+    <ClCompile Include="Billboard.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Clock.cpp" />
     <ClCompile Include="CommonClasses.cpp" />
@@ -82,11 +84,12 @@
     <ClCompile Include="CurrentUpdateState.cpp" />
     <ClCompile Include="DeferredRenderer.cpp" />
     <ClCompile Include="ErrorHandler.cpp" />
+    <ClCompile Include="Framebuffer.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObjects.cpp" />
     <ClCompile Include="GeometryBuffer.cpp" />
-    <ClCompile Include="Label.cpp" />
     <ClCompile Include="Lighting.cpp" />
+    <ClCompile Include="Loader_Config.cpp" />
     <ClCompile Include="Loader_Model.cpp" />
     <ClCompile Include="Loader_Shader.cpp" />
     <ClCompile Include="Loader_Texture.cpp" />
@@ -95,7 +98,12 @@
     <ClCompile Include="OS_Layer.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="ShadowMapBuffer.cpp" />
+    <ClCompile Include="ShadowMapDefRenderer.cpp" />
+    <ClCompile Include="ShadowMaps.cpp" />
+    <ClCompile Include="Sky.cpp" />
     <ClCompile Include="Skybox.cpp" />
+    <ClCompile Include="Skydome.cpp" />
     <ClCompile Include="State_MainMenu.cpp" />
     <ClCompile Include="State_Play.cpp" />
     <ClCompile Include="Timer.cpp" />
@@ -104,6 +112,7 @@
   <ItemGroup>
     <ClInclude Include="AdaptiveUniformsFunctions.h" />
     <ClInclude Include="AdaptiveUniforms.h" />
+    <ClInclude Include="Billboard.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Clock.h" />
     <ClInclude Include="CommonClasses.h" />
@@ -111,20 +120,27 @@
     <ClInclude Include="CurrentUpdateState.h" />
     <ClInclude Include="DeferredRenderer.h" />
     <ClInclude Include="ErrorHandler.h" />
+    <ClInclude Include="Framebuffer.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObjects.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="GeometryBuffer.h" />
-    <ClInclude Include="Label.h" />
     <ClInclude Include="Lighting.h" />
+    <ClInclude Include="Loader_Config.h" />
     <ClInclude Include="Loader_Model.h" />
     <ClInclude Include="Loader_Shader.h" />
     <ClInclude Include="Loader_Texture.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="OS_Layer.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Renderer.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="ShadowMapBuffer.h" />
+    <ClInclude Include="ShadowMapDefRenderer.h" />
+    <ClInclude Include="ShadowMaps.h" />
+    <ClInclude Include="Sky.h" />
     <ClInclude Include="Skybox.h" />
+    <ClInclude Include="Skydome.h" />
     <ClInclude Include="State_MainMenu.h" />
     <ClInclude Include="State_Play.h" />
     <ClInclude Include="Timer.h" />
@@ -132,25 +148,63 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="config.ini" />
+    <None Include="Maps\city.pmap" />
+    <None Include="Maps\cityWithLights.pmap" />
+    <None Include="Maps\current.pmap" />
+    <None Include="Maps\hugeCity.pmap" />
+    <None Include="Maps\hugeCityWithLights.pmap" />
+    <None Include="Maps\JSON.pmap" />
     <None Include="Maps\test.pmap" />
+    <None Include="Maps\test1.pmap" />
+    <None Include="Maps\test1WithLights.pmap" />
+    <None Include="Maps\test2.pmap" />
     <None Include="Objects\car.pgf" />
+    <None Include="Objects\city.pgf" />
+    <None Include="Objects\JSON.pgf" />
+    <None Include="Objects\plane.pgf" />
+    <None Include="Objects\sphere.pgf" />
+    <None Include="Objects\suit.pgf" />
     <None Include="Objects\test.pgf" />
+    <None Include="Objects\test.pobj" />
     <None Include="Objects\test2.pgf" />
     <None Include="Objects\test3.pgf" />
     <None Include="Objects\test4.pgf" />
+    <None Include="Objects\tower.pgf" />
+    <None Include="Shaders\billboard.pfs" />
+    <None Include="Shaders\billboard.pgs" />
+    <None Include="Shaders\billboard.pvs" />
+    <None Include="Shaders\dirBasicShadowMap.pfrag" />
+    <None Include="Shaders\dirBasicShadowMap.pvert" />
     <None Include="Shaders\dirLightPass.pfrag" />
     <None Include="Shaders\dirLightPass.pvert" />
+    <None Include="Shaders\dirShadowMapPass.pfrag" />
+    <None Include="Shaders\dirShadowMapPass.pvert" />
     <None Include="Shaders\geometryPass.pfrag" />
     <None Include="Shaders\geometryPass.pvert" />
     <None Include="Shaders\pointLightPass.pfrag" />
     <None Include="Shaders\pointLightPass.pvert" />
     <None Include="Shaders\skybox.pfs" />
     <None Include="Shaders\skybox.pvs" />
+    <None Include="Shaders\skydome.pfs" />
+    <None Include="Shaders\skydome.pvs" />
+    <None Include="Shaders\spotLightPass.pfrag" />
+    <None Include="Shaders\spotLightPass.pvert" />
     <None Include="Shaders\stencilPass.pfrag" />
     <None Include="Shaders\stencilPass.pvert" />
+    <None Include="Shaders\testShader.pfrag" />
+    <None Include="Shaders\testShader.pvert" />
     <None Include="Shaders\TextureFragmentShader.fragmentshader" />
     <None Include="Shaders\TransformVertexShader.vertexshader" />
     <None Include="skybox1.psf" />
+    <None Include="skybox2.psf" />
+    <None Include="skydome.sky" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

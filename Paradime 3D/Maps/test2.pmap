@@ -1,0 +1,22 @@
+game_object test3.pgf	0.0 -2.0 0.0		0.0 0.0 0.0		200.0 200.0 200.0
+
+game_object suit.pgf	0.0 0.0 0.0			0.0 0.0 0.0		1.0 1.0 1.0
+
+game_object suit.pgf	5.0 0.0 0.0			0.0 0.0 0.0		1.0 1.0 1.0
+game_object suit.pgf	7.5 0.0 0.0			0.0 0.0 0.0		1.0 1.0 1.0
+
+game_object suit.pgf	-5.0 0.0 0.0			0.0 0.0 0.0		1.0 1.0 1.0
+game_object suit.pgf	-7.5 0.0 0.0			0.0 0.0 0.0		1.0 1.0 1.0
+game_object suit.pgf	-5.0 0.0 -2.0			0.0 0.0 0.0		1.0 1.0 1.0
+game_object suit.pgf	-7.5 0.0 -2.0			0.0 0.0 0.0		1.0 1.0 1.0
+
+//game_object sphere.pgf	2.0 0.0 0.0			0.0 0.0 0.0		1.0 1.0 1.0
+
+skybox skybox2.psf
+
+player					0.0 4.0 4.0
+
+//light_directional		1.0 1.0 1.0		0.05 0.8		0.84 -0.87 -1.24
+light_directional		1.0 1.0 1.0		0.5 0.7		1.0 1.0 1.0
+
+light_point				1.0 1.0 1.0		0.1 1.0		0.0 4.0 4.0		1.0 0.0 0.01

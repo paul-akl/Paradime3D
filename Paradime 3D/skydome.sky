@@ -1,0 +1,17 @@
+{
+	"Model Name": "geodesic_dome.obj",
+	"Materials": {
+		"Sun Image": "sun.png",
+		"Moon Image": "moon.png",
+		"Sun Glow Map": "glow.png",
+		"Sky Color Map": "sky.png"
+	},
+	"Shaders": {
+		"Vertex": "skydome.pvs",
+		"Fragment": "skydome.pfs"
+	},
+	"Position": {
+		"Skydome offset": "0.0, -0.1, 0.0",
+		"Skyobjects offset": "50.0, 50.0, 50.0"
+	}
+}

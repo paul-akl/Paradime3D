@@ -1,0 +1,53 @@
+#version 330 core
+
+//int maxVertices = 4;
+
+layout(points) in;
+layout(triangle_strip) out;
+layout(max_vertices = 4) out;
+
+uniform mat4 Model;
+uniform mat4 View;
+uniform mat4 Projection;
+
+out vec2 texCoord;
+
+void main()
+{
+	float scale = 6.0;
+	
+	// Get the directions to which the geometry will be generated
+	vec3 rightVec = vec3(View[0].x, View[1].x, View[2].x);
+	vec3 upVec = vec3(View[0].y, View[1].y, View[2].y);
+
+	// Get the point position
+	vec3 position = gl_in[0].gl_Position.xyz;
+
+	// Offset the geometry, so it is generated from the center
+	position += (rightVec * scale / 2);
+	position -= (upVec * scale / 2);
+
+	position -= (rightVec * scale);
+	gl_Position = (Projection * View * Model * vec4(position, 1.0)).xyww;
+	texCoord = vec2(0.0, 0.0);
+	EmitVertex();
+
+	position += (upVec * scale * 1.1);
+	gl_Position = (Projection * View * Model * vec4(position, 1.0)).xyww;
+	texCoord = vec2(0.0, 1.0);
+	EmitVertex();
+	
+	position -= (upVec * scale * 1.1);
+	position += (rightVec * scale);
+	gl_Position = (Projection * View * Model * vec4(position, 1.0)).xyww;
+	texCoord = vec2(1.0, 0.0);
+	EmitVertex();
+	
+	position += (upVec * scale * 1.1);
+	gl_Position = (Projection * View * Model * vec4(position, 1.0)).xyww;
+	texCoord = vec2(1.0, 1.0);
+	EmitVertex();
+
+	// 'Flush' the geometry
+	EndPrimitive();
+}

@@ -1,0 +1,22 @@
+#version 330 core
+
+layout(location = 0) in vec3 vertexPosition;
+layout(location = 1) in vec2 vertexUV;
+layout(location = 2) in vec3 vertexNormal;
+
+out vec3 worldPos;
+out vec2 texCoord;
+out vec3 normal;
+
+uniform mat4 MVP;
+uniform mat4 test1PerModelMat;
+uniform mat4 VP;
+
+void main()
+{
+    worldPos = (test1PerModelMat * vec4(vertexPosition, 1.0)).xyz;
+	normal	 = (test1PerModelMat * vec4(vertexNormal, 0.0)).xyz;
+	texCoord = vertexUV;
+
+	gl_Position =  (VP * test1PerModelMat) * vec4(vertexPosition, 1.0);
+}

@@ -50,6 +50,7 @@ void Game::init(void) // Initialize OpenGL values and game related values and va
 	}
 
 	glClearColor(0.0, 0.0, 0.0, 0.0); // set background colour to black for light blending
+	//glClearColor(0.2, 0.2, 0.2, 0.0);
 
 	ModelLoader::init();
 	ShaderLoader::init();
@@ -70,7 +71,7 @@ void Game::init(void) // Initialize OpenGL values and game related values and va
 	currentState = playState;
 
 	Current::init();
-	std::srand(std::time(NULL));
+	std::srand((unsigned int)std::time(NULL));
 }
 void Game::globalUpdate()
 {

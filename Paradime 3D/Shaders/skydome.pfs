@@ -1,0 +1,36 @@
+#version 330 core
+
+struct DirectionalLight
+{
+    vec3 direction;
+};
+
+in vec2 texCoord;
+in vec3 worldPos;
+
+out vec4 fragColor;
+
+uniform sampler2D sunGlowMap;
+uniform sampler2D skyMap;
+
+uniform	DirectionalLight directionalLight;
+
+void main()
+{
+	// Get normals
+    vec3 worldNorm = normalize(worldPos);
+    vec3 lightNorm = normalize(-directionalLight.direction);
+
+    // Get the proximity of the fragment to the sun
+    float toSun = dot(worldNorm, lightNorm);
+
+	if(toSun > 1.0)
+		toSun = 1.0;
+
+    // Look up the sky color and sun glow color values
+    vec4 skyColor = texture2D(skyMap, vec2((lightNorm.y + 1.0) / 2.0, worldNorm.y));
+    vec4 sunGlow = texture2D(sunGlowMap, vec2((lightNorm.y + 1.0) / 2.0, toSun));
+
+    // Add sky color and sun glow color together
+    fragColor = vec4(skyColor.rgb + sunGlow.rgb * sunGlow.a / 2.0, skyColor.a);
+}

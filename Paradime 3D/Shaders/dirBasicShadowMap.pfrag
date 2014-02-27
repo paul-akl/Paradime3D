@@ -1,0 +1,131 @@
+#version 330 core
+
+out vec4 fragColor;
+
+in vec4 shadowMapCoord;
+                                                      
+struct BaseLight
+{
+    vec3  color;
+    float ambientIntensity;
+    float diffuseIntensity;
+};
+struct DirectionalLight
+{
+    BaseLight base;
+    vec3 direction;
+};
+struct Attenuation
+{
+    float constant;
+    float linear;
+    float exp;
+};
+
+uniform sampler2D dirShadowMap;
+uniform sampler2D positionMap;
+uniform sampler2D diffuseMap;
+uniform sampler2D normalMap;
+
+uniform	DirectionalLight directionalLight;
+
+uniform float	specularIntensity;
+uniform float	specularPower;
+uniform float	fogDensity;
+
+uniform vec3	fogColor;
+uniform vec3	cameraPos;
+uniform vec2	screenSize;
+
+float calcShadowFactor()
+{
+	//if(texture(dirShadowMap, shadowMapCoord.xy).z < shadowMapCoord.z)
+	//	return 0.5;
+	//else
+		return 1.0;
+
+	vec3 projCoord = shadowMapCoord.xyz / shadowMapCoord.w;
+    vec2 UVCoords;
+    UVCoords.x = 0.5 * projCoord.x + 0.5;
+    UVCoords.y = 0.5 * projCoord.y + 0.5;
+    float Depth = texture(dirShadowMap, UVCoords).x;
+    if (Depth <= (projCoord.z + 0.005))
+        return 0.5;
+    else
+        return 1.0;
+}
+
+vec4 calcLightInternal(BaseLight light_arg, vec3 lightDirection_arg, vec3 worldPos_arg, vec3 normal_arg)
+{
+    vec4  ambientColor	= vec4(light_arg.color, 1.0) * light_arg.ambientIntensity;
+    float diffuseFactor = dot(normal_arg, -lightDirection_arg);
+	float angle = dot(vec3(0.0, 1.0, 0.0), -lightDirection_arg);
+	float gradient = 1.0;
+
+	gradient = min(0.5, angle);
+
+    vec4 diffuseColor  = vec4(0.0, 0.0, 0.0, 0.0);
+    vec4 specularColor = vec4(0.0, 0.0, 0.0, 0.0);
+
+    if(diffuseFactor > 0)
+	{
+        diffuseColor = vec4(light_arg.color, 1.0) * light_arg.diffuseIntensity * diffuseFactor;
+
+        vec3 vertexToEye = normalize(cameraPos - worldPos_arg);
+        vec3 lightReflect = normalize(reflect(lightDirection_arg, normal_arg));
+        float specularFactor = dot(vertexToEye, lightReflect);
+        specularFactor = pow(specularFactor, specularPower);
+        if(specularFactor > 0) 
+		{
+            specularColor = vec4(light_arg.color, 1.0) * specularIntensity * specularFactor;
+        }
+    }
+
+	float shadowFactor = calcShadowFactor();
+
+    return (ambientColor + shadowFactor * (diffuseColor + specularColor)) * (gradient * 2);
+}
+
+float calcLightFactor(vec3 lightDirection_arg)
+{
+	float angle = dot(vec3(0.0, 1.0, 0.0), -lightDirection_arg);
+	float gradient = 1.0;
+	gradient = min(0.5, angle);
+
+    return (gradient * 2);
+}
+
+float calcFogFactor(vec3 worldPos_arg, vec3 cameraPos_arg, float fogDensity_arg)
+{
+	float distance = sqrt(	(worldPos_arg.x - cameraPos_arg.x)*(worldPos_arg.x - cameraPos_arg.x) +
+							(worldPos_arg.y - cameraPos_arg.y)*(worldPos_arg.y - cameraPos_arg.y) +
+							(worldPos_arg.z - cameraPos_arg.z)*(worldPos_arg.z - cameraPos_arg.z)	);
+
+	return (1.0 - clamp(exp(-pow(fogDensity_arg * distance, 2.0)), 0.0, 1.0));
+}
+
+vec4 calcDirectionalLight(vec3 worldPos_arg, vec3 normal_arg)
+{
+	return calcLightInternal(directionalLight.base, directionalLight.direction, worldPos_arg, normal_arg);
+}
+
+vec2 calcTexCoord()
+{
+    return gl_FragCoord.xy / screenSize;
+}
+
+void main()
+{    
+    vec2 texCoord = calcTexCoord();
+	vec3 worldPos = texture(positionMap, texCoord).xyz;
+	vec3 color = texture(diffuseMap, texCoord).xyz;
+	vec3 normal = texture(normalMap, texCoord).xyz;
+	normal = normalize(normal);
+
+	float fogFactor = calcFogFactor(worldPos, cameraPos, fogDensity);
+
+	vec4 fogColorWithLight = vec4(fogColor, 1.0) * calcLightFactor(directionalLight.direction);
+	vec4 lightColor = vec4(color, 1.0) * calcDirectionalLight(worldPos, normal);
+
+	fragColor = mix(lightColor, fogColorWithLight, fogFactor);
+}

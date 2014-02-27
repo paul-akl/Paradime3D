@@ -12,18 +12,19 @@
 #define MSG_WARNING		2
 #define MSG_INFO		3
 
-#define MSG_ENGINE	 0
-#define MSG_CONFIG	 1
-#define MSG_TEXTURE  2
-#define MSG_MODEL	 3
-#define MSG_SHADER	 4
-#define MSG_OBJECT	 5
-#define MSG_PLAYER	 6
-#define MSG_SKYBOX	 7
-#define MSG_LIGHT	 8
-#define MSG_GBUFFER	 9
-#define MSG_SCENE	 10
-#define MSG_RENDERER 11
+#define MSG_ENGINE		0
+#define MSG_CONFIG		1
+#define MSG_TEXTURE		2
+#define MSG_MODEL		3
+#define MSG_SHADER		4
+#define MSG_OBJECT		5
+#define MSG_PLAYER		6
+#define MSG_SKY			7
+#define MSG_LIGHT		8
+#define MSG_GBUFFER		9
+#define MSG_SCENE		10
+#define MSG_RENDERER	11
+#define MSG_FILELOADER	12
 
 namespace Message
 {	
@@ -52,6 +53,7 @@ namespace Message
 	std::string toString(double double_arg);
 	std::string toString(float float_arg);
 	std::string toString(bool bool_arg);
+	std::string toString(char char_arg);
 }
 
 #endif

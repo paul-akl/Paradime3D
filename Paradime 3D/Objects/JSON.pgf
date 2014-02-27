@@ -1,0 +1,22 @@
+{
+	"File type": "Game object",
+	"Model": {
+		"File name": "tower_cyl.obj",
+		"Rotation": "0.0, 0.0, 0.0",
+		"Scale": "1.0, 1.0, 1.0"
+	},
+	"Shaders": {
+		"Vertex": "geometryPass.pvert",
+		"Fragment": "geometryPass.pfrag"
+	},
+	"Materials": {
+		"Diffuse": [
+			"Name": "Castle_tower_Cyl_diffuse.tga",
+			"Index": "0"
+		],
+		"Normal": [
+			"Name": "Castle_tower_Cyl_normals.tga",
+			"Index": "0"
+		]
+	}
+}

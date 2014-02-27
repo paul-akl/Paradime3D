@@ -3,6 +3,8 @@
 
 #include <SDL.h>
 
+#include "Renderer.h"
+
 // GameState needs to refer to the Game object which needs to
 // refer to GameState objects, which creates a circular dependency
 // and causes problems with #includes 
@@ -15,15 +17,19 @@ class Game;
 
 // Abstract game state class
 // different game states will inherit from this
-class GameState {
+class GameState 
+{
 public:
-	virtual ~GameState() { return; } // need a virtual destructor
+
+	virtual ~GameState() { return; }
 	virtual void draw() = 0;
-	//virtual void init(Game * context) = 0;
 	virtual void init(Game &context) = 0;
-	// Not using update function yet
 	virtual void update(Game &context) = 0;
 	virtual void handleSDLEvent(SDL_Event const &sdlEvent, Game &context) = 0;
+
+protected:
+
+	Renderer *renderer;
 };
 
 #endif

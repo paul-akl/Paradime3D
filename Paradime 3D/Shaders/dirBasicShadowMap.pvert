@@ -1,0 +1,14 @@
+#version 330 core
+
+layout(location = 0) in vec3 vertexPosition;
+
+uniform mat4 dirLightMat;
+uniform mat4 dirShadowMapMVP;
+
+out vec4 shadowMapCoord;
+
+void main()
+{
+	gl_Position =  dirLightMat * vec4(vertexPosition, 1.0);
+	shadowMapCoord = dirShadowMapMVP * vec4(vertexPosition, 1.0);
+}

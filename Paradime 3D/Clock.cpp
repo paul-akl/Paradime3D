@@ -84,7 +84,7 @@ float Clock::GetMSfloat()
 
 int Clock::GetFPS()
 {
-	return (1000 / lastFrameMS);
+	return (int)(1000 / lastFrameMS);
 }
 
 string Clock::GetFPSstring()

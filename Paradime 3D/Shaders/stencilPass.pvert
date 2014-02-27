@@ -2,9 +2,9 @@
 
 layout(location = 0) in vec3 vertexPosition;
 
-uniform mat4 pointLightMVP;
+uniform mat4 stencilMVP;
 
 void main()
 {
-	gl_Position =  pointLightMVP * vec4(vertexPosition, 1.0);
+	gl_Position =  stencilMVP * vec4(vertexPosition, 1.0);
 }

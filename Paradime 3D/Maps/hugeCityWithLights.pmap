@@ -1,0 +1,90 @@
+{
+	"game objects": 
+	[
+		{
+			"name": "city.pgf",
+			"position": "2300.0, -70.0, 0.0",
+			"rotation": "0.0, 0.0, 0.0",
+			"scale": "1.0, 1.0, 1.0"
+		},
+		{
+			"name": "city.pgf",
+			"position": "-2300.0, -130.0, 0.0",
+			"rotation": "0.0, 0.0, 0.0",
+			"scale": "1.0, 1.0, 1.0"
+		},
+		{
+			"name": "city.pgf",
+			"position": "2300.0, -70.0, 1800.0",
+			"rotation": "0.0, 0.0, 0.0",
+			"scale": "1.0, 1.0, 1.0"
+		},
+		{
+			"name": "city.pgf",
+			"position": "2300.0, -70.0, -1800.0",
+			"rotation": "0.0, 0.0, 0.0",
+			"scale": "1.0, 1.0, 1.0"
+		},
+		{
+			"name": "city.pgf",
+			"position": "-2300.0, -130.0, 1800.0",
+			"rotation": "0.0, 0.0, 0.0",
+			"scale": "1.0, 1.0, 1.0"
+		},
+		{
+			"name": "city.pgf",
+			"position": "-2300.0, -130.0, -1800.0",
+			"rotation": "0.0, 0.0, 0.0",
+			"scale": "1.0, 1.0, 1.0"
+		},
+		{
+			"name": "city.pgf",
+			"position": "0.0, -100.0, 1800.0",
+			"rotation": "0.0, 0.0, 0.0",
+			"scale": "1.0, 1.0, 1.0"
+		},
+		{
+			"name": "city.pgf",
+			"position": "0.0, -100.0, -1800.0",
+			"rotation": "0.0, 0.0, 0.0",
+			"scale": "1.0, 1.0, 1.0"
+		},
+		{
+			"name": "city.pgf",
+			"position": "0.0, -100.0, 0.0",
+			"rotation": "0.0, 0.0, 0.0",
+			"scale": "1.0, 1.0, 1.0"
+		}
+	],
+	"lighting": 
+	{
+		"directional": 
+		{
+				"color": "1.0, 1.0, 1.0",
+				"direction": "120.0, 1.0, 1.0",
+				"ambient intensity": "0.1",
+				"diffuse intensity": "0.6"
+		},
+		"point": 
+		[
+			{
+				"color": "1.0, 1.0, 1.0",
+				"position": "0.0, 4.0, 4.0",
+				"ambient intensity": "0.1",
+				"diffuse intensity": "1.0",
+				"constant attenuation": "1.0",
+				"linear attenuation": "0.0",
+				"quadratic attenuation": "0.01"
+			}
+		]
+	},
+	"sky": 
+	{
+		"name": "skydome.sky",
+		"type": "skydome"
+	},
+	"player": 
+	{
+		"position": "0.0, 4.0, 4.0"
+	}
+}

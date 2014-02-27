@@ -3,6 +3,7 @@
 layout(location = 0) in vec3 vertexPosition;
 
 uniform mat4 pointLightMVP;
+uniform mat4 testtest;
 
 void main()
 {

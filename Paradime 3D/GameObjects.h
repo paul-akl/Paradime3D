@@ -4,9 +4,9 @@
 #include <vector>
 
 #include "CommonClasses.h"
-
 #include "Config.h"
 #include "ErrorHandler.h"
+#include "Loader_Config.h"
 #include "Loader_Model.h"
 #include "Loader_Shader.h"
 #include "Loader_Texture.h"
@@ -29,6 +29,7 @@ public:
 	void setPlayer(Math3d::Vec3f *position_arg, Math3d::Vec3f *target_arg);
 
 	void render();
+	void render(ShaderLoader::BaseShader *shader_arg);
 	void update();
 	
 private:
@@ -67,12 +68,13 @@ private:
 		~Object();
 
 		void render();
+		void render(ShaderLoader::BaseShader *shader_arg);
 		void update();
 		bool compareFileName(std::string fileName_arg);
 
 		std::string								objectFileName;
 		ModelLoader::Model						*model;
-		ShaderLoader::Shader					*shader;
+		ShaderLoader::VertFragShader			*shader;
 		std::vector<TextureLoader::Texture2D*>	texturePool;
 		ObjectLoaderParameters					objectLoaderParam;
 		Common::ObjectParameters				*objectParameters;
@@ -80,6 +82,7 @@ private:
 	private:
 
 		GLuint positionUniform;
+		ConfigFile gameObjectFile;
 
 		void loadFromFile(std::string fileName_arg);
 	};

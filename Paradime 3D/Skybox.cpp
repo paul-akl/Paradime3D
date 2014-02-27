@@ -8,14 +8,16 @@
 
 #include "Skybox.h"
 
-Skybox::Skybox(std::string fileName_arg)
+Skybox::Skybox(std::string fileName_arg) : Sky(fileName_arg)
 {
-	fileName = fileName_arg;
-	Message::show(MSG_INFO, MSG_SKYBOX, "Handle has been created.");
+	//fileName = fileName_arg;
+	Message::show(MSG_INFO, MSG_SKY, "Handle has been created.");
 }
 Skybox::~Skybox()
 {
-
+	delete skyCubeMap;
+	texturePool->clear();
+	delete texturePool;
 }
 
 void Skybox::load()
@@ -27,42 +29,42 @@ void Skybox::load()
 	try
 	{
 		loadFromFile();
-		shader = ShaderLoader::load(vertexShaderFileName, fragmentShaderFileName);
-		sphere = new ModelLoader::GenericModel(modelName);
-		objectParameters = new Common::ObjectParameters();
+		skyShader = ShaderLoader::load(vertexShaderFileName, fragmentShaderFileName);
+		skyModel = new ModelLoader::GenericModel(skyModelName);
+		skyModelParam = new Common::ObjectParameters();
 	}
 	catch(Message::messageCode error)
 	{
 		error.display();
 	}
 
-	objectParameters->scaleVec = Math3d::Vec3f(50, 50, 50);
-	objectParameters->rotationVec = Math3d::Vec3f(180, 0, 0);
-	objectParameters->modified = true;
+	skyModelParam->scaleVec = Math3d::Vec3f(50, 50, 50);
+	skyModelParam->rotationVec = Math3d::Vec3f(180, 0, 0);
+	skyModelParam->modified = true;
 
 	// Make sure the VAO is not changed from the outside
 	glBindVertexArray(0);
 }
 void Skybox::update()
 {
-	objectParameters->modified = true;
-	objectParameters->positionVec = Current::player->currentCamera->position;
+	skyModelParam->modified = true;
+	skyModelParam->positionVec = Current::player->currentCamera->position;
 }
 void Skybox::render()
 {
 	// Bind Vertex Array Object
 	glBindVertexArray(VAO);
 
-	Current::objectParameters = objectParameters;
-	texture3D->bind();
+	Current::objectParameters = skyModelParam;
+	skyCubeMap->bind();
 
 	glDepthMask(false);
 	glCullFace(GL_FRONT);
     glDepthFunc(GL_LEQUAL);
 	
-	shader->updateFrame();
+	skyShader->updateFrame();
 
-	sphere->render(shader);
+	skyModel->render(skyShader);
 
 	glCullFace(Config::engine::face_culling_mode);
     glDepthFunc(Config::engine::depth_test_func);
@@ -87,7 +89,7 @@ void Skybox::loadFromFile()
 	
 	if(skyboxFile.fail())
 	{
-		throw Message::messageCode(MSG_ERROR, MSG_SKYBOX, fileName + ": has failed to load.");
+		throw Message::messageCode(MSG_ERROR, MSG_SKY, fileName + ": has failed to load.");
 	}
 
 	while(!skyboxFile.eof())
@@ -181,10 +183,10 @@ void Skybox::loadFromFile()
 		
 		if(parameterWords[i] == "model")
 		{
-			modelName = parameterWords[i + 1];
+			skyModelName = parameterWords[i + 1];
 			i++;
 			continue;
 		}
 	}
-	texture3D = TextureLoader::load3D(&cubemap);
+	skyCubeMap = TextureLoader::load3D(&cubemap);
 }

@@ -6,10 +6,11 @@
 #include "Loader_Model.h"
 #include "Loader_Shader.h"
 #include "Loader_Texture.h"
+#include "Sky.h"
 
 #include <vector>
 
-class Skybox
+class Skybox : public Sky
 {
 public:
 
@@ -22,15 +23,9 @@ public:
 
 private:
 	
-	Common::ObjectParameters *objectParameters;
-	TextureLoader::Texture3D *texture3D;
-	ModelLoader::GenericModel *sphere;
-	ShaderLoader::Shader *shader;
-	std::string fileName,
-				modelName,
-				vertexShaderFileName,
+	TextureLoader::Texture3D *skyCubeMap;
+	std::string vertexShaderFileName,
 				fragmentShaderFileName;
-	GLuint		VAO;
 
 	std::vector<TextureLoader::Texture2D*> *texturePool;
 

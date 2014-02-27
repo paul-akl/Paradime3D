@@ -29,192 +29,63 @@ Scene::Scene(std::string sceneName_arg)
 }
 Scene::~Scene()
 {
-	//delete gameObjectPool;
-	//delete lighting;
+	delete gameObjectPool;
+	delete lighting;
+	delete sky;
+	delete testSphere;
+	delete testShader;
 }
 
 void Scene::loadScene(std::string sceneName_arg)
 {
 	//unloadGameObjects();
-	sceneName = sceneName_arg;
+	sceneFile.configFileName = sceneName_arg;
 	loadFromFile();
+
+	std::cout << "Number of point lights: " << lighting->pointLightPoolSize << std::endl;
 }
 void Scene::unloadScene()
 {
 
 }
 
-void Scene::renderSkybox()
+void Scene::renderSky()
 {
-	skybox->render();
+	sky->render();
 }
 void Scene::renderObjects()
 {
 	gameObjectPool->render();
 }
+void Scene::renderObjects(ShaderLoader::BaseShader *shader_arg)
+{
+	gameObjectPool->render(shader_arg);
+}
 void Scene::update()
 {
-	skybox->update();
+	sky->update();
 
 	gameObjectPool->update();
 }
 
 void Scene::loadFromFile()
 {
-	std::ifstream sceneFile;
-	std::string singleWord, nextWord;
-	std::vector<std::string> parameterWords;
-	bool lastPartFound = false;
-
-	sceneFile.open(sceneName, std::ios::in);
-
-	if(sceneFile.fail())
-	{
-		throw Message::messageCode(MSG_FATAL_ERROR, MSG_OBJECT, sceneName + ": has failed to load.");
-	}
-
-	while(!sceneFile.eof())
-	{
-		sceneFile >> singleWord;
-
-		lastPartFound = false;
-
-		if(*singleWord.begin() == '"')
-		{
-			while(!lastPartFound)
-			{
-				sceneFile >> nextWord;
-				singleWord+= " " + nextWord;
-					
-				if(*singleWord.rbegin() == '"')
-				{
-					singleWord.erase(0, 1);
-					singleWord.erase(singleWord.size() - 1, singleWord.size());
-						
-					lastPartFound = true;
-				}
-				else
-					if(sceneFile.eof())
-						throw Message::messageCode(MSG_ERROR, MSG_OBJECT, sceneName + ": Scene file is missing \" (Quotation marks).");
-			}
-		}
-
-		parameterWords.push_back(singleWord);
-	}
-		
-	sceneFile.close();
-
-	std::string dirLightVertexShader		= "", 
-				dirLightFragmentShader		= "",
-				pointLightVertexShader		= "",
-				pointLightFragmentShader	= "",
-				spotLightVertexShader		= "",
-				spotLightFragmentShader		= "",
-				stencilPassVertexShader		= "",
-				stencilPassFragmentShader	= "";
-
-	for(unsigned int i=0; i < parameterWords.size(); i++)
-	{
-		if(parameterWords[i] == "game_object" || parameterWords[i] == "game_obj")
-		{			
-			gameObjectPool->load(parameterWords[i+1],	Math3d::Vec3f(std::atof(parameterWords[i+2].c_str()), std::atof(parameterWords[i+3].c_str()), std::atof(parameterWords[i+4].c_str())),
-														Math3d::Vec3f(std::atof(parameterWords[i+5].c_str()), std::atof(parameterWords[i+6].c_str()), std::atof(parameterWords[i+7].c_str())),
-														Math3d::Vec3f(std::atof(parameterWords[i+8].c_str()), std::atof(parameterWords[i+9].c_str()), std::atof(parameterWords[i+10].c_str())));
-
-			i += 10;
-			continue;
-		}
-
-		if(parameterWords[i] == "skybox" || parameterWords[i] == "skysphere")
-		{
-			skybox = new Skybox(parameterWords[i+1]);
-			skybox->load();
-			i++;
-			continue;
-		}
-
-		if(parameterWords[i] == "light_directional")
-		{
-			lighting->addDirectionalLight(	Math3d::Vec3f(std::atof(parameterWords[i+1].c_str()), std::atof(parameterWords[i+2].c_str()), std::atof(parameterWords[i+3].c_str())),
-											std::atof(parameterWords[i+4].c_str()), std::atof(parameterWords[i+5].c_str()),
-											Math3d::Vec3f(std::atof(parameterWords[i+6].c_str()), std::atof(parameterWords[i+7].c_str()), std::atof(parameterWords[i+8].c_str())));
-			i += 8;
-			
-			continue;
-		}
-			
-		if(parameterWords[i] == "light_point")
-		{
-			lighting->addPointLight(	Math3d::Vec3f(std::atof(parameterWords[i+1].c_str()), std::atof(parameterWords[i+2].c_str()), std::atof(parameterWords[i+3].c_str())),
-										std::atof(parameterWords[i+4].c_str()), std::atof(parameterWords[i+5].c_str()),
-										Math3d::Vec3f(std::atof(parameterWords[i+6].c_str()), std::atof(parameterWords[i+7].c_str()), std::atof(parameterWords[i+8].c_str())),
-										std::atof(parameterWords[i+9].c_str()), std::atof(parameterWords[i+10].c_str()), std::atof(parameterWords[i+11].c_str())	);
-			i += 11;
-			continue;
-		}
-			
-		if(parameterWords[i] == "light_spot")
-		{
-			//objectParameters->rotationVec = Math3d::Vec3f(std::atof(parameterWords[i+1].c_str()), std::atof(parameterWords[i+2].c_str()), std::atof(parameterWords[i+3].c_str()));
-			i += 3;
-			continue;
-		}
-
-		if(parameterWords[i] == "light_directional_shader")
-		{
-			dirLightVertexShader	= parameterWords[i+1];
-			dirLightFragmentShader	= parameterWords[i+2];
-			i += 2;
-			continue;
-		}
-
-		if(parameterWords[i] == "light_point_shader")
-		{
-			pointLightVertexShader	 = parameterWords[i+1];
-			pointLightFragmentShader = parameterWords[i+2];
-			i += 2;
-			continue;
-		}
-
-		if(parameterWords[i] == "light_spot_shader")
-		{
-			spotLightVertexShader	= parameterWords[i+1];
-			spotLightFragmentShader	= parameterWords[i+2];
-			i += 2;
-			continue;
-		}
-
-		if(parameterWords[i] == "light_stencilPass_shader")
-		{
-			stencilPassVertexShader	= parameterWords[i+1];
-			stencilPassFragmentShader	= parameterWords[i+2];
-			i += 2;
-			continue;
-		}
-
-		if(parameterWords[i] == "player")
-		{
-			player.position = Math3d::Vec3f(std::atof(parameterWords[i+1].c_str()), std::atof(parameterWords[i+2].c_str()), std::atof(parameterWords[i+3].c_str()));
-			i += 3;
-			continue;
-		}
-	}
-
-	/*// Check if there aren't any missing shader names in the scene file
-	// If not, initialize lighting shaders
-	if(	dirLightVertexShader	== "" || dirLightFragmentShader		== "" || 
-		pointLightVertexShader	== "" || pointLightFragmentShader	== "" || 
-		spotLightVertexShader	== "" || spotLightFragmentShader	== ""	 )
-		throw Message::messageCode(MSG_FATAL_ERROR, MSG_SCENE, "Missing lighting shaders in \"" + sceneName + "\".");
-	//else
-		//lighting->initShaders(dirLightVertexShader, dirLightFragmentShader, pointLightVertexShader, pointLightFragmentShader, spotLightVertexShader, spotLightFragmentShader);
+	sceneFile.import();
+	std::cout << sceneFile.getString() << std::endl;	// REMOVE
 	
-	// Check if there aren't any missing shader names in the scene file
-	// If not, initialize gbuffer stencil pass shaders
-	if(stencilPassVertexShader == "" || stencilPassFragmentShader == "")
-		throw Message::messageCode(MSG_FATAL_ERROR, MSG_SCENE, "Missing stencil pass shaders in \"" + sceneName + "\".");
-	//else
-		//gBuffer->initStencilShaders(stencilPassVertexShader, stencilPassFragmentShader);*/
+	ConfigFile::Node *rootNode = sceneFile.getRootNode();
+
+	try
+	{
+		loadGameObjects(rootNode->getNode("game objects"));
+		loadLighting(rootNode->getNode("lighting"));
+		loadPlayer(rootNode->getNode("player"));
+		loadSky(rootNode->getNode("sky"));
+	}
+	catch(Message::messageCode error)
+	{
+		error.display();
+	}
 }
 void Scene::unloadGameObjects()
 {
@@ -222,4 +93,234 @@ void Scene::unloadGameObjects()
 		//ModelLoader::unload(modelPool[i]->modelName);
 
 	//modelPool.clear();
+}
+
+void Scene::loadGameObjects(ConfigFile::Node* node_arg)
+{
+	if(node_arg != NULL)
+	{
+		ConfigFile::Node *tempNode;
+		std::string tempName;
+		Math3d::Vec3f tempPosition, tempRotation, tempScale;
+
+		for(std::vector<ConfigFile::ArrayNode*>::size_type i=0; i < node_arg->arrayNodes.size(); i++)
+		{
+			tempNode = node_arg->arrayNodes[i]->getValueNode("name");
+			if(tempNode != NULL)
+				tempName = tempNode->value->getString();
+			else
+				tempName = "";
+
+			tempNode = node_arg->arrayNodes[i]->getValueNode("position");
+			if(tempNode != NULL)
+				tempPosition = tempNode->value->getVec3f();
+
+			tempNode = node_arg->arrayNodes[i]->getValueNode("rotation");
+			if(tempNode != NULL)
+				tempRotation = tempNode->value->getVec3f();
+
+			tempNode = node_arg->arrayNodes[i]->getValueNode("scale");
+			if(tempNode != NULL)
+				tempScale = tempNode->value->getVec3f();
+
+			gameObjectPool->load(tempName, tempPosition, tempRotation, tempScale);
+		}
+	}
+}
+void Scene::loadLighting(ConfigFile::Node* node_arg)
+{
+	if(node_arg != NULL)
+	{
+		ConfigFile::Node *tempNode, *tempLightNode;
+		Math3d::Vec3f tempColor, tempPosition, tempDirection;
+		float tempAmbientIntensity, tempDiffuseIntensity, tempConstant, tempLinear, tempQuadratic, tempCutoff;
+
+		tempNode = node_arg->getNode("directional");
+		if(tempNode != NULL)
+		{
+			tempLightNode = tempNode->getValueNode("color");
+			if(tempLightNode != NULL)
+				tempColor = tempLightNode->value->getVec3f();
+			else
+				tempColor = Math3d::Vec3f(0.0);
+
+			tempLightNode = tempNode->getValueNode("direction");
+			if(tempLightNode != NULL)
+				tempDirection = tempLightNode->value->getVec3f();
+			else
+				tempDirection = Math3d::Vec3f(0.0);
+
+			tempLightNode = tempNode->getValueNode("ambient intensity");
+			if(tempLightNode != NULL)
+				tempAmbientIntensity = tempLightNode->value->getFloat();
+			else
+				tempAmbientIntensity = 0.0f;
+
+			tempLightNode = tempNode->getValueNode("diffuse intensity");
+			if(tempLightNode != NULL)
+				tempDiffuseIntensity = tempLightNode->value->getFloat();
+			else
+				tempDiffuseIntensity = 0.0f;
+
+			lighting->addDirectionalLight(tempColor, tempAmbientIntensity, tempDiffuseIntensity, tempDirection);
+		}
+		else
+		{
+			lighting->addDirectionalLight(Math3d::Vec3f(0.0f), 0.0f, 0.0f, Math3d::Vec3f(0.0f));
+		}
+		
+		tempNode = node_arg->getNode("point");
+		for(std::vector<ConfigFile::Node*>::size_type i=0; i < tempNode->arrayNodes.size(); i++)
+		{
+			tempLightNode = tempNode->arrayNodes[i]->getValueNode("color");
+			if(tempLightNode != NULL)
+				tempColor = tempLightNode->value->getVec3f();
+			else
+				tempColor = Math3d::Vec3f(0.0);
+
+			tempLightNode = tempNode->arrayNodes[i]->getValueNode("position");
+			if(tempLightNode != NULL)
+				tempPosition = tempLightNode->value->getVec3f();
+			else
+				tempPosition = Math3d::Vec3f(0.0);
+
+			tempLightNode = tempNode->arrayNodes[i]->getValueNode("ambient intensity");
+			if(tempLightNode != NULL)
+				tempAmbientIntensity = tempLightNode->value->getFloat();
+			else
+				tempAmbientIntensity = 0.0f;
+
+			tempLightNode = tempNode->arrayNodes[i]->getValueNode("diffuse intensity");
+			if(tempLightNode != NULL)
+				tempDiffuseIntensity = tempLightNode->value->getFloat();
+			else
+				tempDiffuseIntensity = 0.0f;
+
+			tempLightNode = tempNode->arrayNodes[i]->getValueNode("constant attenuation");
+			if(tempLightNode != NULL)
+				tempConstant = tempLightNode->value->getFloat();
+			else
+				tempConstant = 0.0f;
+
+			tempLightNode = tempNode->arrayNodes[i]->getValueNode("linear attenuation");
+			if(tempLightNode != NULL)
+				tempLinear = tempLightNode->value->getFloat();
+			else
+				tempLinear = 0.0f;
+
+			tempLightNode = tempNode->arrayNodes[i]->getValueNode("quadratic attenuation");
+			if(tempLightNode != NULL)
+				tempQuadratic = tempLightNode->value->getFloat();
+			else
+				tempQuadratic = 0.0f;
+
+			lighting->addPointLight(tempColor, tempAmbientIntensity, tempDiffuseIntensity, tempPosition, tempConstant, tempLinear, tempQuadratic);
+		}
+
+		tempNode = node_arg->getNode("spot");
+		for(std::vector<ConfigFile::Node*>::size_type i=0; i < tempNode->arrayNodes.size(); i++)
+		{
+			tempLightNode = tempNode->arrayNodes[i]->getValueNode("color");
+			if(tempLightNode != NULL)
+				tempColor = tempLightNode->value->getVec3f();
+			else
+				tempColor = Math3d::Vec3f(0.0);
+
+			tempLightNode = tempNode->arrayNodes[i]->getValueNode("position");
+			if(tempLightNode != NULL)
+				tempPosition = tempLightNode->value->getVec3f();
+			else
+				tempPosition = Math3d::Vec3f(0.0);
+
+			tempLightNode = tempNode->arrayNodes[i]->getValueNode("direction");
+			if(tempLightNode != NULL)
+				tempDirection = tempLightNode->value->getVec3f();
+			else
+				tempDirection = Math3d::Vec3f(0.0);
+			
+			tempLightNode = tempNode->arrayNodes[i]->getValueNode("cutoff");
+			if(tempLightNode != NULL)
+				tempCutoff = tempLightNode->value->getFloat();
+			else
+				tempCutoff = 0.0f;
+
+			tempLightNode = tempNode->arrayNodes[i]->getValueNode("ambient intensity");
+			if(tempLightNode != NULL)
+				tempAmbientIntensity = tempLightNode->value->getFloat();
+			else
+				tempAmbientIntensity = 0.0f;
+
+			tempLightNode = tempNode->arrayNodes[i]->getValueNode("diffuse intensity");
+			if(tempLightNode != NULL)
+				tempDiffuseIntensity = tempLightNode->value->getFloat();
+			else
+				tempDiffuseIntensity = 0.0f;
+
+			tempLightNode = tempNode->arrayNodes[i]->getValueNode("constant attenuation");
+			if(tempLightNode != NULL)
+				tempConstant = tempLightNode->value->getFloat();
+			else
+				tempConstant = 0.0f;
+
+			tempLightNode = tempNode->arrayNodes[i]->getValueNode("linear attenuation");
+			if(tempLightNode != NULL)
+				tempLinear = tempLightNode->value->getFloat();
+			else
+				tempLinear = 0.0f;
+
+			tempLightNode = tempNode->arrayNodes[i]->getValueNode("quadratic attenuation");
+			if(tempLightNode != NULL)
+				tempQuadratic = tempLightNode->value->getFloat();
+			else
+				tempQuadratic = 0.0f;
+
+			lighting->addSpotLight(tempColor, tempAmbientIntensity, tempDiffuseIntensity, tempPosition, tempConstant, tempLinear, tempQuadratic, tempDirection, tempCutoff);
+		}
+	}
+}
+void Scene::loadPlayer(ConfigFile::Node *node_arg)
+{
+	if(node_arg != NULL)
+	{
+		ConfigFile::Node *tempNode;
+		Math3d::Vec3f tempPosition;
+
+		tempNode = node_arg->getValueNode("position");
+		tempPosition = tempNode->value->getVec3f();
+
+		player.position = tempPosition;
+	}
+	else
+	{
+		player.position = Math3d::Vec3f(0.0f);
+	}
+}
+void Scene::loadSky(ConfigFile::Node *node_arg)
+{
+	if(node_arg != NULL)
+	{
+		ConfigFile::Node *tempNode, *nameNode = node_arg->getValueNode("name");
+		
+		tempNode = node_arg->getValueNode("type");
+		if(tempNode->value->getString() == "skydome")
+		{
+			sky = new Skydome(nameNode->value->getString());
+			sky->load();
+		}
+		else
+		{
+			if(tempNode->value->getString() == "skybox")
+			{
+
+			}
+			else
+			{
+				throw Message::messageCode(MSG_ERROR, MSG_SCENE, "No sky found.");
+			}
+		}
+	}
+	else
+	{
+		throw Message::messageCode(MSG_ERROR, MSG_SCENE, "No sky found.");
+	}
 }

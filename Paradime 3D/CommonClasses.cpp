@@ -10,6 +10,17 @@ namespace Common
 		modified = true;
 		scaleVec = Math3d::Vec3f(1, 1, 1);
 	}
+	void ObjectParameters::calcModelMat()
+	{
+		if(modified)
+		{
+			modified = false;
+			modelMat.identity();
+			modelMat.rotate(rotationVec);
+			modelMat.transform(positionVec);
+			modelMat.scale(scaleVec);
+		}
+	}
 
 	InputState::InputState()
 	{
@@ -31,6 +42,7 @@ namespace Common
 		vsyncKey.init(&Config::keys::vsync);
 		clipMouseKey.init(&Config::keys::clip_mouse);
 		debug1Key.init(&Config::keys::debug_1);
+		debug2Key.init(&Config::keys::debug_2);
 		escKey.init(&Config::keys::escKey);
 		backKey.init(&Config::keys::backKey);
 		arrowUpKey.init(&Config::keys::arrow_up);

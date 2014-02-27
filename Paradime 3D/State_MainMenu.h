@@ -2,7 +2,6 @@
 #define STATE_MAIN_MENU
 
 #include "GameState.h"
-#include "Label.h"
 
 class StateMainMenu : public GameState
 {

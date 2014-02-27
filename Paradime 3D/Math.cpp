@@ -22,11 +22,11 @@ namespace Math3d
 
 	float toRadian(float f_arg)
 	{
-		return (f_arg * M_PI / 180.0f);
+		return (f_arg * (float)PI / 180.0f);
 	}
 	float toDegree(float f_arg)
 	{
-		return (f_arg * 180.0f / M_PI);
+		return (f_arg * 180.0f / (float)PI);
 	}
 	float getMax(float x_arg, float y_arg)
 	{
@@ -77,7 +77,7 @@ namespace Math3d
 		rotZ.m[2] = 0.0f   ; rotZ.m[6] = 0.0f    ; rotZ.m[10] = 1.0f; //rotZ.m[14] = 0.0f;
 		//rotZ.m[3] = 0.0f   ; rotZ.m[7] = 0.0f    ; rotZ.m[11] = 0.0f; rotZ.m[15] = 1.0f;
 
-		*this = (rotZ * rotY * rotX);
+		*this = (*this * rotY * rotX * rotZ);
 	}
 	void Mat4f::perspective(float FOV_arg, int screenWidth_arg, int screenHeight_arg, float zNear_arg, float zFar_arg)
 	{
@@ -117,5 +117,12 @@ namespace Math3d
 		m[1] = U.x;					m[5] = U.y;					m[9]  = U.z;				m[13] = -dot(U, position_arg);
 		m[2] = -N.x;				m[6] = -N.y;				m[10] = -N.z;				m[14] = dot(N, position_arg);
 		//m[3] = 0.0f;				m[7] = 0.0f;				m[11] = 0.0f;				m[15] = 1.0f;
+	}
+	void Mat4f::ortho(float left_arg, float right_arg, float down_arg, float up_arg, float zNear_arg, float zFar_arg)
+	{
+		m[0] = 2 / (right_arg - left_arg);							m[4] = 0.0f;										m[8] = 0.0f;												m[12] = 0.0f;
+		m[1] = 0.0f;												m[5] = 2 / (up_arg - down_arg);						m[9] = 0.0f;												m[13] = 0.0f;
+		m[2] = 0.0f;												m[6] = 0.0f;										m[10] = -2 / (zFar_arg - zNear_arg);						m[14] = 0.0f;
+		m[3] = -(right_arg + left_arg)  / (right_arg - left_arg);	m[7] = -(up_arg + down_arg)  / (up_arg - down_arg);	m[11] = -(zFar_arg + zNear_arg)  / (zFar_arg - zNear_arg);	m[15] = 1.0f;
 	}
 }

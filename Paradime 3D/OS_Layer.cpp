@@ -20,7 +20,7 @@ namespace OS
 		float textureAnisotropicFilterMax;
 		glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &textureAnisotropicFilterMax);
 		if(Config::texture::gl_texture_anisotropy > textureAnisotropicFilterMax)
-			Config::texture::gl_texture_anisotropy = textureAnisotropicFilterMax;
+			Config::texture::gl_texture_anisotropy = (int)textureAnisotropicFilterMax;
 
 		SDL_DisplayMode currentDisplayMode;
 		SDL_GetCurrentDisplayMode(Config::window::default_display, &currentDisplayMode);	// Retrieve current maximum screen resolution, used to correct resolution from Config file
@@ -93,13 +93,7 @@ namespace OS
 		else
 			Message::show(MSG_WARNING, MSG_ENGINE, "Depth test is disabled.");
 
-		if(Config::engine::face_culling)
-		{
-			glEnable(GL_CULL_FACE);
-			glCullFace(Config::engine::face_culling_mode);
-		}
-		else
-			Message::show(MSG_WARNING, MSG_ENGINE, "Face culling is disabled.");
+		resetFaceCulling();
 
 		setVerticalSync(Config::engine::vertical_sync); // Set swap buffers to sync with monitor's vertical refresh rate
 
@@ -128,9 +122,10 @@ namespace OS
 			switch(sdlEvent.window.event)
 			{
 			case SDL_WINDOWEVENT_RESIZED: // Remember window size, and take care of OpenGL View Port, when resized
-
-				Config::currentScreenWidth = sdlEvent.window.data1;
-				Config::currentScreenHeight = sdlEvent.window.data2;
+				
+				Config::resizeWindow = true;
+				Config::window::size_windowed_x = sdlEvent.window.data1;	Config::currentScreenWidth = Config::window::size_windowed_x;
+				Config::window::size_windowed_y = sdlEvent.window.data2;	Config::currentScreenHeight = Config::window::size_windowed_y;
 				glViewport(0, 0, Config::currentScreenWidth, Config::currentScreenHeight);
 
 				Message::show(MSG_INFO, MSG_ENGINE, "Window has been resized to: " + Message::toString(Config::currentScreenWidth) + "x" + Message::toString(Config::currentScreenHeight));
@@ -237,50 +232,63 @@ namespace OS
 			if(sdlEvent.key.keysym.scancode == Current::inputState->debug1Key.scancode)
 			{
 				//Config::drawDebugBuffers = !Config::drawDebugBuffers;
-				Current::scene->lighting->directionalLight->direction.rotate(5.0, Math3d::Vec3f(0.0, 0.0, 1.0));
+				//Current::scene->lighting->directionalLight->direction.rotate(5.0, Math3d::Vec3f(0.0, 0.0, 1.0));
+				Current::scene->lighting->directionalLight->direction.z += 0.5;
+				std::cout << Current::scene->lighting->directionalLight->direction.x << " ; " << Current::scene->lighting->directionalLight->direction.y 
+						  << " ; " << Current::scene->lighting->directionalLight->direction.z << std::endl;
+				Current::scene->lighting->directionalLight->directionUpdated = true;
+				return;
+			}
+			
+			if(sdlEvent.key.keysym.scancode == Current::inputState->debug2Key.scancode)
+			{
+				Config::drawDebugBuffers = !Config::drawDebugBuffers;
 				return;
 			}
 			
 			if(sdlEvent.key.keysym.scancode == Current::inputState->arrowUpKey.scancode)
 			{
-				Current::scene->lighting->directionalLight->direction.rotate(5.0, Math3d::Vec3f(1.0, 0.0, 0.0));
-				//Current::scene->lighting->directionalLight->direction.x += 0.1;
-				//std::cout << "X: " << Current::scene->lighting->directionalLight->direction.x << std::endl;
-				//Current::scene->lighting->currentPointLight->position.x += 0.1;
+				Current::scene->lighting->directionalLight->direction.x += 0.5;
+				std::cout << Current::scene->lighting->directionalLight->direction.x << " ; " << Current::scene->lighting->directionalLight->direction.y 
+						  << " ; " << Current::scene->lighting->directionalLight->direction.z << std::endl;
+				Current::scene->lighting->directionalLight->directionUpdated = true;
+
+				
+				//Current::scene->lighting->spotLightPool[0]->direction.y += 1.5;
 				return;
 			}
 			
 			if(sdlEvent.key.keysym.scancode == Current::inputState->arrowDownKey.scancode)
 			{
-				Current::scene->lighting->directionalLight->direction.rotate(-5.0, Math3d::Vec3f(1.0, 0.0, 0.0));
-				//Current::scene->lighting->directionalLight->direction.x -= 0.1;
-				//std::cout << "X: " << Current::scene->lighting->directionalLight->direction.x << std::endl;
-				//Current::scene->lighting->currentPointLight->position.x -= 0.1;
+				Current::scene->lighting->directionalLight->direction.x -= 0.5;
+				std::cout << Current::scene->lighting->directionalLight->direction.x << " ; " << Current::scene->lighting->directionalLight->direction.y 
+						  << " ; " << Current::scene->lighting->directionalLight->direction.z << std::endl;
+				Current::scene->lighting->directionalLight->directionUpdated = true;
+
+				
+				//Current::scene->lighting->spotLightPool[0]->direction.y -= 1.5;
 				return;
 			}
 			
 			if(sdlEvent.key.keysym.scancode == Current::inputState->arrowLeftKey.scancode)
 			{
-				
-				Current::scene->lighting->directionalLight->direction.rotate(-5.0, Math3d::Vec3f(0.0, 1.0, 0.0));
-				//Current::scene->lighting->directionalLight->direction.y += 1;
-				//Current::scene->lighting->currentPointLight->position.y += 0.1;
+				Current::scene->lighting->directionalLight->direction.y -= 1.5;
+				std::cout << Current::scene->lighting->directionalLight->direction.x << " ; " << Current::scene->lighting->directionalLight->direction.y 
+						  << " ; " << Current::scene->lighting->directionalLight->direction.z << std::endl;
+				Current::scene->lighting->directionalLight->directionUpdated = true;
+
+				//Current::scene->lighting->spotLightPool[0]->direction.x -= 1.5;
 				return;
 			}
 			
 			if(sdlEvent.key.keysym.scancode == Current::inputState->arrowRightKey.scancode)
 			{
+				Current::scene->lighting->directionalLight->direction.y += 1.5;
+				std::cout << Current::scene->lighting->directionalLight->direction.x << " ; " << Current::scene->lighting->directionalLight->direction.y 
+						  << " ; " << Current::scene->lighting->directionalLight->direction.z << std::endl;
+				Current::scene->lighting->directionalLight->directionUpdated = true;
 
-				//Math3d::Vec3f rotVec(0.0, 5.0, 0.0);
-				//Math3d::Mat4f rotation;
-				//rotation.rotate(rotVec);
-
-				//Current::scene->lighting->directionalLight->direction = Math3d::Vec4f(Current::scene->lighting->directionalLight->direction, 0.0) * rotation;
-
-				Current::scene->lighting->directionalLight->direction.rotate(5.0, Math3d::Vec3f(0.0, 1.0, 0.0));
-
-				//Current::scene->lighting->directionalLight->direction.y -= 1;
-				//Current::scene->lighting->currentPointLight->position.y -= 0.1;
+				//Current::scene->lighting->spotLightPool[0]->direction.x += 1.5;
 				return;
 			}
 
@@ -334,6 +342,7 @@ namespace OS
 	{
 		SDL_SetWindowSize(sdlWindow, width_arg, height_arg);
 		glViewport(0, 0, width_arg, height_arg);
+		Config::resizeWindow = true;
 		std::cout << "Windows Size Set " << width_arg << "x" << height_arg << std::endl;
 	}
 	void setVerticalSync(bool vsync_arg)
@@ -346,6 +355,7 @@ namespace OS
 			SDL_SetWindowFullscreen(sdlWindow, SDL_TRUE);
 		else
 			SDL_SetWindowFullscreen(sdlWindow, SDL_FALSE);
+		Config::resizeWindow = true;
 	}
 	void setMouseDisplay(bool mouseDisplay_arg)
 	{
@@ -357,6 +367,16 @@ namespace OS
 	void resetMousePosition()
 	{
 		SDL_WarpMouseInWindow(sdlWindow, Config::currentScreenWidth / 2, Config::currentScreenHeight / 2);
+	}
+	void resetFaceCulling()
+	{
+		if(Config::engine::face_culling)
+		{
+			glEnable(GL_CULL_FACE);
+			glCullFace(Config::engine::face_culling_mode);
+		}
+		else
+			glDisable(GL_CULL_FACE);
 	}
 
 	void getWindowSize(int *width_arg, int *height_arg)

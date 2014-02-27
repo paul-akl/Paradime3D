@@ -3,8 +3,6 @@
 
 #include "CommonClasses.h"
 #include "GameState.h"
-#include "Label.h"
-// C stdlib and C time libraries for rand and time functions
 #include <cstdlib>
 #include <ctime>
 #include "Clock.h"
@@ -26,7 +24,7 @@ private:
 
 	Common::InputState inputs;
 	Common::Perspective perspective;
-	DeferredRenderer renderer;
+	//DeferredRenderer renderer;
 
 	// Another *strong* candidate for creating a new class type
 	// is character/agent, to encapsulate player and target data,
@@ -45,11 +43,6 @@ private:
 
 	clock_t lastTime; // clock_t is an integer type
 	clock_t currentTime; // use this to track time between frames
-
-	Label * playerLabel;
-	Label * targetLabel;
-
-	TTF_Font * textFont;	// SDL type for True-Type font rendering
 
 };
 
